@@ -42,6 +42,7 @@ export function CategoriesPageContent() {
   const [formSlug, setFormSlug] = useState("")
   const [formDescription, setFormDescription] = useState("")
   const [formParentId, setFormParentId] = useState<string>("none")
+  const [formAnimalType, setFormAnimalType] = useState<string>("universal")
 
   useEffect(() => {
     fetchCategories()
@@ -49,13 +50,28 @@ export function CategoriesPageContent() {
 
   const fetchCategories = async () => {
     try {
+      console.log("[fetchCategories] Starting fetch...")
       const res = await fetch("/api/categories")
+      
+      console.log("[fetchCategories] Response status:", res.status)
+      
       const data = await res.json()
+      
+      console.log("[fetchCategories] Received data:", {
+        length: data.length,
+        categories: data.map((c: any) => ({
+          id: c.id,
+          name: c.name,
+          parentId: c.parentId,
+          children: c.children?.length || 0
+        }))
+      })
+      
       setCategories(data)
       // Expand all by default
       setExpandedCategories(new Set(data.map((c: Category) => c.id)))
     } catch (error) {
-      console.error("Error fetching categories:", error)
+      console.error("[fetchCategories] Error fetching categories:", error)
     } finally {
       setLoading(false)
     }
@@ -85,6 +101,7 @@ export function CategoriesPageContent() {
     setFormSlug("")
     setFormDescription("")
     setFormParentId("none")
+    setFormAnimalType("universal")
     setEditingCategory(null)
   }
 
@@ -94,47 +111,78 @@ export function CategoriesPageContent() {
     setFormSlug(category.slug)
     setFormDescription(category.description)
     setFormParentId(category.parentId || "none")
+    setFormAnimalType(category.animalType || "universal")
     setIsAddDialogOpen(true)
   }
 
   const handleSubmit = async () => {
+    if (!formName.trim()) {
+      console.error("Category name is required")
+      alert("Le nom de la catégorie est requis")
+      return
+    }
+
     const payload = {
       name: formName,
       slug: formSlug || generateSlug(formName),
       description: formDescription,
       parentId: formParentId === "none" ? null : formParentId,
+      animalType: formAnimalType,
     }
 
     try {
+      let response
       if (editingCategory) {
-        await fetch(`/api/admin/categories/${editingCategory.id}`, {
+        response = await fetch(`/api/admin/categories/${editingCategory.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         })
       } else {
-        await fetch("/api/admin/categories", {
+        response = await fetch("/api/admin/categories", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         })
       }
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error("API error response:", errorData)
+        alert(`Erreur: ${errorData.error || "Impossible de sauvegarder la catégorie"}`)
+        return
+      }
+
+      const result = await response.json()
+      console.log("Category saved successfully:", result)
+      
       await fetchCategories()
       setIsAddDialogOpen(false)
       resetForm()
     } catch (error) {
       console.error("Error saving category:", error)
+      alert(`Erreur: ${error instanceof Error ? error.message : "Impossible de sauvegarder la catégorie"}`)
     }
   }
 
   const handleDelete = async (categoryId: string) => {
     try {
-      await fetch(`/api/admin/categories/${categoryId}`, {
+      const response = await fetch(`/api/admin/categories/${categoryId}`, {
         method: "DELETE",
       })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error("API error response:", errorData)
+        alert(`Erreur: ${errorData.error || "Impossible de supprimer la catégorie"}`)
+        return
+      }
+
+      console.log("Category deleted successfully")
       await fetchCategories()
     } catch (error) {
       console.error("Error deleting category:", error)
+      alert(`Erreur: ${error instanceof Error ? error.message : "Impossible de supprimer la catégorie"}`)
     }
   }
 
@@ -223,6 +271,22 @@ export function CategoriesPageContent() {
                           {cat.name}
                         </SelectItem>
                       ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="animal">Type d'animal</Label>
+                <Select value={formAnimalType} onValueChange={setFormAnimalType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner un animal" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cat">Chat</SelectItem>
+                    <SelectItem value="dog">Chien</SelectItem>
+                    <SelectItem value="bird">Oiseau</SelectItem>
+                    <SelectItem value="other">Autre</SelectItem>
+                    <SelectItem value="universal">Universel (tous les animaux)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

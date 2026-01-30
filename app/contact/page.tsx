@@ -1,6 +1,6 @@
 "use client"
 
-import { Mail, Phone, MapPin, Clock, MessageCircle } from "lucide-react"
+import { Mail, Phone, MapPin, Clock, MessageCircle, Instagram, Music } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -38,8 +38,8 @@ export default function ContactPage() {
               <div>
                 <h3 className="font-semibold mb-1">Call Us</h3>
                 <p className="text-muted-foreground mb-2">Available Monday to Saturday, 9:00 AM to 6:00 PM</p>
-                <a href="tel:+213770867403" className="text-primary font-medium hover:underline">
-                  +213 770 867 403
+                <a href="tel:+213770874393" className="text-primary font-medium hover:underline">
+                  0770 874 393
                 </a>
               </div>
             </div>
@@ -51,8 +51,8 @@ export default function ContactPage() {
               <div>
                 <h3 className="font-semibold mb-1">Email Us</h3>
                 <p className="text-muted-foreground mb-2">Send us your questions or concerns</p>
-                <a href="mailto:Parapharmacielolivier@gmail.com" className="text-primary font-medium hover:underline">
-                  Parapharmacielolivier@gmail.com
+                <a href="mailto:petsmaniaanimalerie@gmail.com" className="text-primary font-medium hover:underline">
+                  petsmaniaanimalerie@gmail.com
                 </a>
               </div>
             </div>
@@ -64,8 +64,7 @@ export default function ContactPage() {
               <div>
                 <h3 className="font-semibold mb-1">Visit Us</h3>
                 <p className="text-muted-foreground">
-                  04 rue la zitouna soukahras<br />
-                  41000 Souk Ahras, Algeria
+                  Bordj Bou Arreridj, RUE F, Algeria
                 </p>
               </div>
             </div>
@@ -127,7 +126,7 @@ export default function ContactPage() {
           <h2 className="text-2xl font-bold mb-6">Our Location</h2>
           <div className="rounded-lg overflow-hidden border border-border shadow-lg">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d239.04139062746782!2d7.957357446124503!3d36.28453691768868!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12fa7d0552a34f85%3A0xb9d33ff02fe3b430!2sParapharmacie%20L&#39;olivier!5e0!3m2!1sfr!2sdz!4v1769084823395!5m2!1sfr!2sdz"
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7985.718726677108!2d4.774855!3d36.080875!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128cbd547e5e75bf%3A0xeddc6d390870c024!2sPetsmania%20Animalerie!5e1!3m2!1sen!2sdz!4v1769769242973!5m2!1sen!2sdz"
               width="100%"
               height="450"
               style={{ border: 0 }}
@@ -142,29 +141,31 @@ export default function ContactPage() {
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-6">Connect With Us</h2>
           <p className="text-muted-foreground mb-6">Follow us on social media for updates and promotions</p>
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-4 flex-wrap">
             <Button variant="outline" asChild>
               <a
-                href="https://www.facebook.com/share/16msr2HLCG/?mibextid=wwXIfr"
+                href="https://www.instagram.com/petsmania_341"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Facebook
+                <Instagram className="w-4 h-4 mr-2" />
+                @petsmania_341
               </a>
             </Button>
             <Button variant="outline" asChild>
-              <a
-                href="https://www.instagram.com/parapharmacie_de_lolivier?igsh=MWZmOGNhMHRyeWJmNw=="
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Instagram
-              </a>
-            </Button>
-            <Button variant="outline" asChild>
-              <a href="https://wa.me/+213770867403" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/0770874393" target="_blank" rel="noopener noreferrer">
                 <MessageCircle className="w-4 h-4 mr-2" />
                 WhatsApp
+              </a>
+            </Button>
+            <Button variant="outline" asChild>
+              <a
+                href="https://www.tiktok.com/@petsmania345"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Music className="w-4 h-4 mr-2" />
+                @petsmania345
               </a>
             </Button>
           </div>

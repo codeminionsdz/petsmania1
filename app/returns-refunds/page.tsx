@@ -202,7 +202,7 @@ export default function ReturnsRefundsPage() {
               اتصل بنا
             </a>
             <a
-              href="mailto:Parapharmacielolivier@gmail.com"
+              href="mailto:petsmania@gmail.com"
               className="flex-1 text-center px-6 py-3 bg-white border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition-colors font-semibold"
             >
               أرسل بريد

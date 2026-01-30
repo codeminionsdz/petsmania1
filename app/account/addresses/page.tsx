@@ -17,6 +17,7 @@ import type { Address } from "@/lib/types"
 interface AddressWithId extends Address {
   id: string
   isDefault: boolean
+  wilayaName?: string
 }
 
 interface Wilaya {
@@ -88,18 +89,22 @@ export default function AddressesPage() {
         }
 
         if (addressesData && addressesData.length > 0) {
-          const formattedAddresses: AddressWithId[] = addressesData.map((addr: any) => ({
-            id: addr.id,
-            firstName: addr.first_name,
-            lastName: addr.last_name,
-            phone: addr.phone,
-            email: addr.email,
-            address: addr.address,
-            city: addr.city,
-            wilaya: addr.wilaya_id, // Store the wilaya_id
-            postalCode: addr.postal_code,
-            isDefault: addr.is_default,
-          }))
+          const formattedAddresses: AddressWithId[] = addressesData.map((addr: any) => {
+            const wilayaName = wilayasData?.find((w: any) => w.id === addr.wilaya_id)?.name || null
+            return {
+              id: addr.id,
+              firstName: addr.first_name,
+              lastName: addr.last_name,
+              phone: addr.phone,
+              email: addr.email,
+              address: addr.address,
+              city: addr.city,
+              wilaya: addr.wilaya_id, // Store the wilaya_id
+              wilayaName,
+              postalCode: addr.postal_code,
+              isDefault: addr.is_default,
+            }
+          })
           setAddresses(formattedAddresses)
         } else {
           // If no addresses, try to get from first order
@@ -113,6 +118,7 @@ export default function AddressesPage() {
 
           if (orderData && orderData.shipping_address) {
             const shippingAddr = orderData.shipping_address
+            const wilayaNameFromList = wilayasData?.find((w: any) => w.id === shippingAddr.wilaya)?.name || null
             const newAddress: AddressWithId = {
               id: "default",
               firstName: shippingAddr.firstName,
@@ -122,6 +128,7 @@ export default function AddressesPage() {
               address: shippingAddr.address,
               city: shippingAddr.city,
               wilaya: shippingAddr.wilaya,
+              wilayaName: wilayaNameFromList || (shippingAddr.wilayaName ?? null),
               postalCode: shippingAddr.postalCode,
               isDefault: true,
             }
@@ -620,7 +627,7 @@ export default function AddressesPage() {
                     </p>
                     <p className="text-muted-foreground text-sm mt-2">{address.address}</p>
                     <p className="text-muted-foreground text-sm">
-                      {address.city}, {wilayas.find(w => w.id === address.wilaya)?.name || address.wilaya} {address.postalCode}
+                      {address.city}, {address.wilayaName || wilayas.find(w => w.id === address.wilaya)?.name || address.wilaya} {address.postalCode}
                     </p>
                     <p className="text-muted-foreground text-sm mt-2 font-medium">{address.phone}</p>
                     {address.email && <p className="text-muted-foreground text-sm">{address.email}</p>}

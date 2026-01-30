@@ -1,17 +1,26 @@
 import { Loader2 } from "lucide-react"
+import { getLoadingSpinnerGradient } from "@/lib/animal-colors"
+import type { AnimalType } from "@/lib/animal-colors"
 
-export function LoadingSpinner({ className }: { className?: string }) {
+interface LoadingSpinnerProps {
+  className?: string
+  animal?: AnimalType
+}
+
+export function LoadingSpinner({ className, animal }: LoadingSpinnerProps) {
+  const spinnerColor = animal ? `text-${getLoadingSpinnerGradient(animal).split('-')[1]}-500` : "text-primary"
+  
   return (
     <div className={`flex items-center justify-center ${className}`}>
-      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <Loader2 className={`h-8 w-8 animate-spin ${spinnerColor}`} />
     </div>
   )
 }
 
-export function LoadingPage() {
+export function LoadingPage({ animal }: { animal?: AnimalType } = {}) {
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
-      <LoadingSpinner />
+      <LoadingSpinner animal={animal} />
     </div>
   )
 }

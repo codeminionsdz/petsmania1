@@ -5,7 +5,9 @@ import { ProductGrid } from "@/components/product/product-grid"
 import { ProductFilters } from "@/components/filters/product-filters"
 import { SortSelect } from "@/components/filters/sort-select"
 import { PaginationControls } from "@/components/ui/pagination-controls"
-import type { Category, Product, Brand, FilterOptions } from "@/lib/types"
+import { AnimalTypeFilter } from "@/components/filters/animal-type-filter"
+import { HydrationSafe } from "@/components/ui/hydration-safe"
+import type { Category, Product, Brand, FilterOptions, AnimalType } from "@/lib/types"
 import { getCategoryIcon } from "@/lib/category-icons"
 import { getCategoryGradient } from "@/lib/category-colors"
 
@@ -14,10 +16,14 @@ interface CategoryPageContentProps {
   initialProducts: Product[]
   brands: Brand[]
   totalProducts: number
+  animalType: AnimalType
+  initialAnimalFilter?: string
 }
 
-export function CategoryPageContent({ category, initialProducts, brands, totalProducts }: CategoryPageContentProps) {
-  const [filters, setFilters] = useState<FilterOptions>({})
+export function CategoryPageContent({ category, initialProducts, brands, totalProducts, animalType, initialAnimalFilter }: CategoryPageContentProps) {
+  const [filters, setFilters] = useState<FilterOptions>(
+    initialAnimalFilter ? { animalTypes: [initialAnimalFilter] } : {}
+  )
   const [sortBy, setSortBy] = useState<FilterOptions["sortBy"]>("popular")
   const [currentPage, setCurrentPage] = useState(1)
   const pageSize = 12
@@ -60,9 +66,16 @@ export function CategoryPageContent({ category, initialProducts, brands, totalPr
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shine" />
       </div>
 
+      {/* Animal Type Filter - Prominent Display */}
+      <div className="mb-8 p-6 rounded-xl bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200/50 dark:border-orange-800/30">
+        <AnimalTypeFilter filters={filters} onFilterChange={setFilters} />
+      </div>
+
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Filters */}
-        <ProductFilters brands={brands} filters={filters} onFilterChange={setFilters} />
+        {/* Filters - Wrapped in HydrationSafe to prevent Radix UI ID mismatches */}
+        <HydrationSafe>
+          <ProductFilters brands={brands} filters={filters} onFilterChange={setFilters} />
+        </HydrationSafe>
 
         {/* Products */}
         <div className="flex-1">

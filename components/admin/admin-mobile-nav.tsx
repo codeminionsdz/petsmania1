@@ -37,10 +37,10 @@ export function AdminMobileNav() {
       {/* Logo */}
       <div className="flex items-center gap-3 px-6 py-4 border-b border-border">
         <div className="relative w-10 h-10 bg-white rounded-lg p-0.5 shadow-sm">
-          <Image src="/images/image.png" alt="Parapharmacie l'Olivier" width={40} height={40} className="w-full h-full object-contain" />
+          <Image src="/logo.png" alt="Petsmania" width={40} height={40} className="w-full h-full object-contain" />
         </div>
         <div>
-          <p className="font-semibold">Parapharmacie l'Olivier</p>
+          <p className="font-semibold">Petsmania</p>
           <p className="text-xs text-muted-foreground">Admin Panel</p>
         </div>
       </div>

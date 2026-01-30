@@ -11,17 +11,23 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ category, className, variant = "default" }: CategoryCardProps) {
+  // If category has subcategories, link to the first one; otherwise link to the category itself
+  const href =
+    category.children && category.children.length > 0
+      ? `/categories/${category.children[0].slug}`
+      : `/categories/${category.slug}`
+
   return (
     <Link
-      href={`/categories/${category.slug}`}
+      href={href}
       className={cn(
-        "group relative block overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-lg",
+        "group relative block overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",
         variant === "large" ? "aspect-[4/3]" : "aspect-square",
         className,
       )}
     >
       <Image
-        src={category.image || "/pharmacy-category.jpg"}
+        src={category.image || "/pet-category.jpg"}
         alt={category.name}
         fill
         className="object-cover transition-transform duration-300 group-hover:scale-105"

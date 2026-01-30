@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useCart } from "@/lib/cart-context"
 import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "@/hooks/use-translation"
 import { formatPrice } from "@/lib/format"
 import { createBrowserClient } from "@supabase/ssr"
 import type { Product } from "@/lib/types"
@@ -20,6 +21,7 @@ export default function WishlistPage() {
   const [error, setError] = useState<string>("")
   const { addItem, toggleCart } = useCart()
   const { toast } = useToast()
+  const { t } = useTranslation()
 
   useEffect(() => {
     const loadWishlist = async () => {
@@ -200,11 +202,13 @@ export default function WishlistPage() {
 
         {wishlist.length === 0 ? (
           <div className="text-center py-16">
-            <Heart className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Your wishlist is empty</h2>
-            <p className="text-muted-foreground mb-6">Save your favorite products for later.</p>
+            <div className="inline-block p-4 bg-red-100 rounded-full mb-4">
+              <Heart className="h-12 w-12 text-red-500" />
+            </div>
+            <h2 className="text-xl font-bold mb-2 text-foreground">{t("empty.wishlist_title")}</h2>
+            <p className="text-muted-foreground mb-6">{t("empty.wishlist_message")}</p>
             <Button asChild>
-              <Link href="/categories">Browse Products</Link>
+              <Link href="/categories">{t("empty.browse")}</Link>
             </Button>
           </div>
         ) : (

@@ -22,7 +22,7 @@ export function CartItem({ item }: CartItemProps) {
       <Link href={`/products/${product.slug}`} className="shrink-0">
         <div className="relative w-20 h-20 rounded-md overflow-hidden bg-secondary">
           <Image
-            src={product.images[0] || "/placeholder.svg?height=80&width=80&query=health product"}
+            src={product.images[0] || "/placeholder.svg?height=80&width=80&query=pet product"}
             alt={product.name}
             fill
             className="object-cover"

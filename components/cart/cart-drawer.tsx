@@ -6,11 +6,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useCart } from "@/lib/cart-context"
+import { useTranslation } from "@/hooks/use-translation"
 import { formatPrice } from "@/lib/format"
 import { CartItem } from "./cart-item"
 
 export function CartDrawer() {
   const { items, isOpen, closeCart, subtotal, itemCount } = useCart()
+  const { t } = useTranslation()
 
   return (
     <Sheet open={isOpen} onOpenChange={closeCart}>
@@ -23,12 +25,18 @@ export function CartDrawer() {
         </SheetHeader>
 
         {items.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-center">
-            <ShoppingBag className="h-16 w-16 text-muted-foreground mb-4" />
-            <h3 className="font-semibold text-lg mb-2">Your cart is empty</h3>
-            <p className="text-muted-foreground mb-6">Looks like you haven't added anything to your cart yet.</p>
-            <Button onClick={closeCart} asChild>
-              <Link href="/categories">Start Shopping</Link>
+          <div className="flex-1 flex flex-col items-center justify-center text-center px-6">
+            <div className="mb-6">
+              <div className="inline-block p-4 bg-orange-100 rounded-full mb-4">
+                <ShoppingBag className="h-12 w-12 text-primary" />
+              </div>
+            </div>
+            <h3 className="font-bold text-lg mb-2 text-foreground">{t("empty.cart_title")}</h3>
+            <p className="text-muted-foreground mb-6 leading-relaxed">
+              {t("empty.cart_message")}
+            </p>
+            <Button onClick={closeCart} asChild className="w-full">
+              <Link href="/categories">{t("empty.browse")}</Link>
             </Button>
           </div>
         ) : (

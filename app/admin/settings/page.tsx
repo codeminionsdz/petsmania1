@@ -153,34 +153,34 @@ export default function AdminSettingsPage() {
                   <div className="space-y-3 text-sm">
                     <div>
                       <span className="font-medium">Store Name:</span>
-                      <p className="text-muted-foreground">Parapharmacie l'Olivier</p>
+                      <p className="text-muted-foreground">Petsmania</p>
                     </div>
                     <div>
                       <span className="font-medium">Description:</span>
-                      <p className="text-muted-foreground">Premium parapharmacy products delivered across Algeria</p>
+                      <p className="text-muted-foreground">Premium pet store specializing in food, accessories, toys, and pet care products for cats, dogs, birds, and other animals. Quality products delivered across Algeria.</p>
                     </div>
                     <div>
                       <span className="font-medium">Contact Email:</span>
-                      <p className="text-muted-foreground">Parapharmacielolivier@gmail.com</p>
+                      <p className="text-muted-foreground">petsmania@gmail.com</p>
                     </div>
                     <div>
                       <span className="font-medium">Contact Phone:</span>
-                      <p className="text-muted-foreground">+213770867403</p>
+                      <p className="text-muted-foreground">+213 770 874 393</p>
                     </div>
                     <div>
                       <span className="font-medium">Address:</span>
-                      <p className="text-muted-foreground">04 rue la zitouna soukahras 41000 Souk Ahras, Algeria</p>
+                      <p className="text-muted-foreground">Bordj Bou Arreridj, Algeria</p>
                     </div>
                     <div>
                       <span className="font-medium">Instagram:</span>
-                      <a href="https://www.instagram.com/parapharmacie_de_lolivier?igsh=MWZmOGNhMHRyeWJmNw==" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                        @parapharmacie_de_lolivier
+                      <a href="https://www.instagram.com/petsmania_341" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                        https://www.instagram.com/petsmania_341
                       </a>
                     </div>
                     <div>
-                      <span className="font-medium">Facebook:</span>
-                      <a href="https://www.facebook.com/share/16msr2HLCG/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                        Parapharmacie l'Olivier
+                      <span className="font-medium">TikTok:</span>
+                      <a href="https://www.tiktok.com/@petsmania345" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                        https://www.tiktok.com/@petsmania345
                       </a>
                     </div>
                   </div>

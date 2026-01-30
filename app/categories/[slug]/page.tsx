@@ -1,11 +1,7 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { CategoryPageContent } from "@/components/category/category-page-content"
-import { Breadcrumbs } from "@/components/ui/breadcrumbs"
-import { CartDrawer } from "@/components/cart/cart-drawer"
-import { SubcategoryCard } from "@/components/category/subcategory-card"
+import { CategoryLayout } from "@/components/category/category-layout"
 import { getCategoryBySlug, getProductsByCategory, getBrands } from "@/lib/data"
-import { getCategoryIcon } from "@/lib/category-icons"
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>
@@ -17,95 +13,96 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const category = await getCategoryBySlug(slug)
 
   if (!category) {
-    return { title: "Catégorie Non Trouvée | PharmaCare" }
+    return { title: "Catégorie Non Trouvée | Petsmania" }
   }
 
   return {
-    title: `${category.name} | PharmaCare`,
+    title: `${category.name} | Petsmania`,
     description: category.description,
   }
 }
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
+export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
   const { slug } = await params
+  const resolvedSearchParams = await searchParams
+  const animalFilter = resolvedSearchParams?.animal as string | undefined
 
-  const [category, brands] = await Promise.all([getCategoryBySlug(slug), getBrands()])
+  console.log("[CategoryPage] Loading category with slug:", slug)
+
+  let category = await getCategoryBySlug(slug)
+  let brands = []
+
+  try {
+    const result = await Promise.all([getCategoryBySlug(slug), getBrands()])
+    category = result[0]
+    brands = result[1]
+  } catch (err) {
+    console.error("[CategoryPage] Error fetching category or brands:", err)
+    if (!category) {
+      category = await getCategoryBySlug(slug)
+    }
+    try {
+      brands = await getBrands()
+    } catch (bErr) {
+      console.error("[CategoryPage] Failed to fetch brands:", bErr)
+      brands = []
+    }
+  }
 
   if (!category) {
     notFound()
   }
 
-  const productsResult = await getProductsByCategory(slug)
+  console.log("[CategoryPage] Category loaded:", {
+    id: category.id,
+    name: category.name,
+    parentId: category.parentId,
+    hasChildren: category.children?.length || 0,
+  })
 
-  const breadcrumbItems = [{ label: "Catégories", href: "/categories" }]
-  if (category.parentId && category.parentName && category.parentSlug) {
+  // Determine if this is a main category or subcategory
+  const isMainCategory = !category.parentId
+  const isSubcategory = !!category.parentId
+
+  // Fetch products for this category
+  const productsResult = await getProductsByCategory(slug)
+  console.log("[CategoryPage] Products loaded:", { total: productsResult.total, count: productsResult.data.length })
+
+  // Build breadcrumbs
+  const breadcrumbItems: Array<{ label: string; href?: string }> = [
+    { label: "Catégories", href: "/categories" },
+  ]
+
+  // If this is a subcategory, add parent to breadcrumbs
+  let parentCategory: (typeof category & { children: typeof category[] }) | undefined
+  if (isSubcategory && category.parentSlug) {
     breadcrumbItems.push({
-      label: category.parentName,
+      label: category.parentName || "Catégorie",
       href: `/categories/${category.parentSlug}`,
     })
+
+    // Fetch parent category for tab navigation
+    const parentData = await getCategoryBySlug(category.parentSlug)
+    if (parentData) {
+      parentCategory = {
+        ...parentData,
+        children: parentData.children || [],
+      }
+    }
   }
+
+  // Add current category to breadcrumbs
   breadcrumbItems.push({ label: category.name })
 
-  // Check if this is a main category with subcategories
-  const isMainCategory = !category.parentId && category.children && category.children.length > 0
-  const Icon = getCategoryIcon(category.slug)
-
   return (
-    <>
-      <CartDrawer />
-      <div className="container mx-auto px-4 py-8">
-        <Breadcrumbs items={breadcrumbItems} />
-
-        {/* If main category, show subcategories grid first */}
-        {isMainCategory ? (
-          <div className="space-y-8">
-            <div className="relative rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 border border-border">
-              <div className="px-6 py-10 md:px-12 md:py-14 flex items-center gap-6">
-                <div className="p-5 rounded-full bg-primary/10 text-primary">
-                  <Icon className="h-12 w-12 md:h-16 md:w-16" strokeWidth={1.5} />
-                </div>
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{category.name}</h1>
-                  <p className="text-muted-foreground max-w-2xl">{category.description}</p>
-                  <p className="text-sm text-muted-foreground mt-2">{category.children?.length} sous-catégories</p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Sous-catégories</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {category.children?.map((sub) => (
-                  <SubcategoryCard key={sub.id} subcategory={sub} />
-                ))}
-              </div>
-            </div>
-
-            {/* Products Section (if any) */}
-            {productsResult.total > 0 && (
-              <div>
-                <h2 className="text-xl font-semibold mb-4">
-                  Tous les produits {category.name} ({productsResult.total})
-                </h2>
-                <CategoryPageContent
-                  category={category}
-                  initialProducts={productsResult.data}
-                  brands={brands}
-                  totalProducts={productsResult.total}
-                />
-              </div>
-            )}
-          </div>
-        ) : (
-          /* Regular subcategory page with products */
-          <CategoryPageContent
-            category={category}
-            initialProducts={productsResult.data}
-            brands={brands}
-            totalProducts={productsResult.total}
-          />
-        )}
-      </div>
-    </>
+    <CategoryLayout
+      currentCategory={category}
+      products={productsResult.data}
+      brands={brands}
+      totalProducts={productsResult.total}
+      parentCategory={parentCategory}
+      animalFilter={animalFilter}
+      breadcrumbItems={breadcrumbItems}
+    />
   )
 }

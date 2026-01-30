@@ -1,23 +1,27 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import type { Category } from "@/lib/types"
+import type { Category, AnimalType } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { getCategoryIcon } from "@/lib/category-icons"
 import { getCategoryGradient } from "@/lib/category-colors"
 
 interface SubcategoryCardProps {
   subcategory: Category
+  animalType: AnimalType
   className?: string
 }
 
-export function SubcategoryCard({ subcategory, className }: SubcategoryCardProps) {
+export function SubcategoryCard({ subcategory, animalType, className }: SubcategoryCardProps) {
   const Icon = getCategoryIcon(subcategory.slug)
   // Automatically generate gradient colors based on slug
   const gradient = getCategoryGradient(subcategory.slug)
+  
+  // Generate animal-scoped href
+  const href = `/${animalType}/${subcategory.slug}`
 
   return (
     <Link
-      href={`/categories/${subcategory.slug}`}
+      href={href}
       className={cn(
         "group relative aspect-[4/3] overflow-hidden rounded-xl border border-border transition-all duration-300",
         "hover:shadow-xl hover:border-primary/40 hover:-translate-y-1.5",

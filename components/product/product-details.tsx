@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { ShoppingCart, Heart, Truck, ShieldCheck, RotateCcw, Check, Minus, Plus, Share2, Copy, Facebook, MessageCircle, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -16,6 +17,7 @@ interface ProductDetailsProps {
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {
+  const router = useRouter()
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [showShareMenu, setShowShareMenu] = useState(false)
@@ -55,12 +57,22 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           description: `${product.name} has been added to your wishlist.`,
         })
       }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Please log in to save to wishlist.",
-        variant: "destructive",
-      })
+    } catch (error: any) {
+      // Check if error is due to user not being logged in
+      if (error?.message?.includes("User must be logged in")) {
+        toast({
+          title: "Login Required",
+          description: "Please log in to add items to your wishlist.",
+          variant: "destructive",
+        })
+        router.push("/login")
+      } else {
+        toast({
+          title: "Error",
+          description: "Please log in to save to wishlist.",
+          variant: "destructive",
+        })
+      }
     }
   }
 

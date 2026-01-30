@@ -36,6 +36,7 @@ interface Product {
   description: string | null
   tags: string[] | null
   featured: boolean
+  animalType?: string | null
   images: ProductImage[]
 }
 
@@ -66,6 +67,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     description: "",
     tags: "",
     featured: false,
+    animalType: "",
   })
 
   // First, unwrap params
@@ -104,6 +106,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
           description: productData.description || "",
           tags: productData.tags?.join(", ") || "",
           featured: productData.featured,
+          animalType: productData.animalType || "",
         })
       })
       .catch(console.error)
@@ -197,6 +200,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
         description: formData.description || null,
         tags: formData.tags ? formData.tags.split(",").map((t) => t.trim()) : [],
         featured: formData.featured,
+        animalType: formData.animalType || null,
         images: [...existingImages, ...newImageObjects],
         deletedImageIds,
       }
@@ -502,6 +506,26 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="animalType">Type d'animal</Label>
+                  <Select
+                    value={formData.animalType || "none"}
+                    onValueChange={(value) => setFormData((prev) => ({ ...prev, animalType: value === "none" ? "" : value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner un type d'animal" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Aucun</SelectItem>
+                      <SelectItem value="cat">Chats</SelectItem>
+                      <SelectItem value="dog">Chiens</SelectItem>
+                      <SelectItem value="bird">Oiseaux</SelectItem>
+                      <SelectItem value="other">Autres</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">Optionnel - Cible ce produit pour un type d'animal</p>
                 </div>
 
                 <div className="space-y-2">

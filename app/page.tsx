@@ -1,12 +1,11 @@
-import { getCategoriesWithHierarchy, getBrands, getFeaturedProducts } from "@/lib/data"
+import { getBrands, getFeaturedProducts } from "@/lib/data"
 import { HomeContent } from "@/components/home/home-content"
 
 export default async function HomePage() {
-  const [categories, brands, featuredProducts] = await Promise.all([
-    getCategoriesWithHierarchy(),
+  const [brands, featuredProducts] = await Promise.all([
     getBrands(),
     getFeaturedProducts(),
   ])
 
-  return <HomeContent categories={categories} brands={brands} featuredProducts={featuredProducts} />
+  return <HomeContent brands={brands} featuredProducts={featuredProducts} />
 }

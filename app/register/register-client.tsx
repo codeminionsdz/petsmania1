@@ -88,7 +88,7 @@ export default function RegisterPageClient() {
       )
 
       // Generate a unique email from phone for Supabase Auth (hidden from user)
-      const generatedEmail = `phone-${formData.phone}@parapharmacie.local`
+      const generatedEmail = `phone-${formData.phone}@petsmania.local`
 
       console.log("Attempting to sign up with phone:", formData.phone)
 

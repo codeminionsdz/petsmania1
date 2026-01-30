@@ -395,7 +395,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">Newsletter</p>
-                    <p className="text-sm text-muted-foreground">Weekly newsletter with health tips and new products</p>
+                    <p className="text-sm text-muted-foreground">Weekly newsletter with pet care tips and new products</p>
                   </div>
                   <Switch />
                 </div>

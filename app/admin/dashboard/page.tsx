@@ -81,6 +81,7 @@ async function getTopProducts() {
   const productStats = data.reduce((acc: any, item) => {
     if (!acc[item.product_id]) {
       acc[item.product_id] = {
+        id: item.product_id,
         name: item.product_name,
         sales: 0,
         revenue: 0,
@@ -247,7 +248,7 @@ export default async function AdminDashboardPage() {
           <CardContent>
             <div className="space-y-4">
               {topProducts.map((product, index) => (
-                <div key={product.name} className="flex items-center gap-4">
+                <div key={product.id} className="flex items-center gap-4">
                   <span className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-sm font-medium">
                     {index + 1}
                   </span>

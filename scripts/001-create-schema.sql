@@ -8,13 +8,16 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS categories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
-  slug TEXT NOT NULL UNIQUE,
+  slug TEXT NOT NULL,
   description TEXT,
   image TEXT,
+  animal_type TEXT CHECK (animal_type IN ('cat', 'dog', 'bird', 'other', 'universal')),
   parent_id UUID REFERENCES categories(id) ON DELETE SET NULL,
   product_count INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  -- Composite unique constraint: allow same slug for different parent categories
+  UNIQUE(slug, parent_id)
 );
 
 -- Brands Table
@@ -172,6 +175,7 @@ CREATE INDEX IF NOT EXISTS idx_products_brand ON products(brand_id);
 CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug);
 CREATE INDEX IF NOT EXISTS idx_products_featured ON products(featured);
 CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
+CREATE INDEX IF NOT EXISTS idx_categories_parent ON categories(parent_id);
 CREATE INDEX IF NOT EXISTS idx_brands_slug ON brands(slug);
 CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
@@ -183,12 +187,42 @@ CREATE OR REPLACE FUNCTION update_category_product_count()
 RETURNS TRIGGER AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
-    UPDATE categories SET product_count = product_count + 1 WHERE id = NEW.category_id;
+    -- Update main category count
+    IF NEW.category_id IS NOT NULL THEN
+      UPDATE categories SET product_count = product_count + 1 WHERE id = NEW.category_id;
+    END IF;
+    -- Update subcategory count if subcategory_id is provided
+    IF NEW.subcategory_id IS NOT NULL THEN
+      UPDATE categories SET product_count = product_count + 1 WHERE id = NEW.subcategory_id;
+    END IF;
   ELSIF TG_OP = 'DELETE' THEN
-    UPDATE categories SET product_count = product_count - 1 WHERE id = OLD.category_id;
-  ELSIF TG_OP = 'UPDATE' AND OLD.category_id IS DISTINCT FROM NEW.category_id THEN
-    UPDATE categories SET product_count = product_count - 1 WHERE id = OLD.category_id;
-    UPDATE categories SET product_count = product_count + 1 WHERE id = NEW.category_id;
+    -- Update main category count
+    IF OLD.category_id IS NOT NULL THEN
+      UPDATE categories SET product_count = product_count - 1 WHERE id = OLD.category_id;
+    END IF;
+    -- Update subcategory count if subcategory_id was set
+    IF OLD.subcategory_id IS NOT NULL THEN
+      UPDATE categories SET product_count = product_count - 1 WHERE id = OLD.subcategory_id;
+    END IF;
+  ELSIF TG_OP = 'UPDATE' THEN
+    -- Handle main category_id changes
+    IF OLD.category_id IS DISTINCT FROM NEW.category_id THEN
+      IF OLD.category_id IS NOT NULL THEN
+        UPDATE categories SET product_count = product_count - 1 WHERE id = OLD.category_id;
+      END IF;
+      IF NEW.category_id IS NOT NULL THEN
+        UPDATE categories SET product_count = product_count + 1 WHERE id = NEW.category_id;
+      END IF;
+    END IF;
+    -- Handle subcategory_id changes
+    IF OLD.subcategory_id IS DISTINCT FROM NEW.subcategory_id THEN
+      IF OLD.subcategory_id IS NOT NULL THEN
+        UPDATE categories SET product_count = product_count - 1 WHERE id = OLD.subcategory_id;
+      END IF;
+      IF NEW.subcategory_id IS NOT NULL THEN
+        UPDATE categories SET product_count = product_count + 1 WHERE id = NEW.subcategory_id;
+      END IF;
+    END IF;
   END IF;
   RETURN NEW;
 END;

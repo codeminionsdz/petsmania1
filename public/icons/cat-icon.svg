@@ -1,0 +1,14 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <!-- Clean cat silhouette: two pointed ears + round head, fully connected -->
+  <path d="M 28 8
+           L 24 26
+           Q 20 30 20 36
+           Q 20 50 32 56
+           Q 36 58 36 58
+           Q 40 58 44 56
+           Q 52 50 52 36
+           Q 52 30 48 26
+           L 44 8
+           Q 40 14 36 14
+           Q 32 14 28 8 Z"/>
+</svg>

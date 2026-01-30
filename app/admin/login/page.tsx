@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
           {/* Logo and Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
-              <Image src="/images/image.png" alt="PharmaCare Logo" width={60} height={60} className="rounded-full" />
+              <Image src="/logo.png" alt="Petsmania Logo" width={60} height={60} className="rounded-full" />
             </div>
             <h1 className="text-2xl font-bold text-foreground flex items-center justify-center gap-2">
               <Shield className="h-6 w-6 text-primary" />

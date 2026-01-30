@@ -11,10 +11,10 @@ import { Toaster } from "@/components/ui/toaster"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Parapharmacie l'Olivier | Votre Parapharmacie en Ligne de Confiance",
+  title: "Petsmania | Your Online Pet Shop",
   description:
-    "Produits parapharmaceutiques premium livrés à Souk Ahras. Soins de la peau, vitamines, santé et bien-être des marques européennes de confiance.",
-  keywords: ["parapharmacie", "pharmacie", "soins de la peau", "vitamines", "santé", "bien-être", "algérie", "souk ahras"],
+    "Premium pet products delivered across Algeria. Pet food, toys, accessories and wellness items from trusted brands.",
+  keywords: ["pets", "pet shop", "pet food", "pet accessories", "pet care", "veterinary", "algeria"],
   generator: 'v0.app'
 }
 

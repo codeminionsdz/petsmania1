@@ -12,9 +12,15 @@ interface MainCategoryCardProps {
 export function MainCategoryCard({ category, className }: MainCategoryCardProps) {
   const Icon = getCategoryIcon(category.slug)
 
+  // If category has subcategories, link to the first one; otherwise link to the category itself
+  const href =
+    category.children && category.children.length > 0
+      ? `/categories/${category.children[0].slug}`
+      : `/categories/${category.slug}`
+
   return (
     <Link
-      href={`/categories/${category.slug}`}
+      href={href}
       className={cn(
         "group relative flex flex-col items-center justify-center p-6 overflow-hidden rounded-2xl bg-white border border-border transition-all duration-300",
         "hover:shadow-lg hover:border-primary/30 hover:-translate-y-1",

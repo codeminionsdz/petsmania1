@@ -8,26 +8,31 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
-import type { Category, Brand } from "@/lib/types"
+import { ProductHierarchicalSelector, type ProductHierarchicalSelection } from "@/components/admin/product-hierarchical-selector"
+import { SubcategoryDebugger } from "@/components/admin/subcategory-debugger"
+import type { Category, Brand, Subcategory, AnimalType } from "@/lib/types"
 
 export default function NewProductPage() {
   const router = useRouter()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [categories, setCategories] = useState<Category[]>([])
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([])
   const [brands, setBrands] = useState<Brand[]>([])
   const [images, setImages] = useState<File[]>([])
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
-  
-  // Category hierarchy state
-  const [mainCategoryId, setMainCategoryId] = useState("")
-  const [subCategoryId, setSubCategoryId] = useState("")
-  const [subcategories, setSubcategories] = useState<Category[]>([])
-  
+
+  // Hierarchical selection state
+  const [hierarchySelection, setHierarchySelection] = useState<ProductHierarchicalSelection>({
+    animalId: "",
+    categoryId: "",
+    subcategoryId: "",
+    brandId: "",
+  })
+
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -36,57 +41,62 @@ export default function NewProductPage() {
     originalPrice: "",
     discount: "",
     stock: "",
-    categoryId: "",
-    brandId: "",
     shortDescription: "",
     description: "",
     tags: "",
     featured: false,
   })
 
+  // Animals list for selector
+  const ANIMALS = [
+    { value: "cat", label: "Chats 🐱" },
+    { value: "dog", label: "Chiens 🐕" },
+    { value: "bird", label: "Oiseaux 🐦" },
+    { value: "other", label: "Autres 🐾" },
+  ] as const
+
   useEffect(() => {
+    console.log("[NewProductPage] Loading data...")
     Promise.all([
       fetch("/api/categories").then((r) => r.json()),
+      fetch("/api/subcategories").then((r) => r.json()),
       fetch("/api/admin/brands").then((r) => r.json()),
     ])
-      .then(([categoriesData, brandsData]) => {
+      .then(([categoriesData, subcategoriesData, brandsData]) => {
+        console.log("[NewProductPage] ========== DATA LOADED ==========")
+        console.log("[NewProductPage] Categories - count:", Array.isArray(categoriesData) ? categoriesData.length : "not array")
+        console.log("[NewProductPage] Categories - sample:", categoriesData?.slice?.(0, 2))
+        
+        console.log("[NewProductPage] Subcategories - count:", Array.isArray(subcategoriesData) ? subcategoriesData.length : "not array")
+        console.log("[NewProductPage] Subcategories - sample:", subcategoriesData?.slice?.(0, 5))
+        
+        console.log("[NewProductPage] Brands - count:", brandsData?.data?.length || brandsData?.length || 0)
+        
+        // Check for cat-specific subcategories
+        const catSubs = subcategoriesData?.filter((sub: any) => sub.category_id?.includes?.('cat') || sub.name?.toLowerCase()?.includes?.('chat'))
+        console.log("[NewProductPage] Cat-related subcategories:", catSubs)
+        
+        console.log("[NewProductPage] ============================\n")
+        
         setCategories(categoriesData || [])
+        setSubcategories(subcategoriesData || [])
         setBrands(brandsData.data || brandsData || [])
       })
-      .catch(console.error)
+      .catch((error) => {
+        console.error("[NewProductPage] Error loading data:", error)
+      })
   }, [])
-
-  // Update subcategories when main category changes
-  useEffect(() => {
-    if (mainCategoryId) {
-      const mainCategory = categories.find((cat) => cat.id === mainCategoryId)
-      if (mainCategory?.children) {
-        setSubcategories(mainCategory.children)
-        setSubCategoryId("")
-        setFormData((prev) => ({ ...prev, categoryId: "" }))
-      }
-    } else {
-      setSubcategories([])
-      setSubCategoryId("")
-      setFormData((prev) => ({ ...prev, categoryId: "" }))
-    }
-  }, [mainCategoryId, categories])
-
-  // Update categoryId when subcategory is selected
-  useEffect(() => {
-    if (subCategoryId) {
-      setFormData((prev) => ({ ...prev, categoryId: subCategoryId }))
-    }
-  }, [subCategoryId])
 
   // Auto-generate slug from name
   useEffect(() => {
     if (formData.name && !formData.slug) {
-      const slug = formData.name
+      const baseSlug = formData.name
         .toLowerCase()
         .replace(/[^a-z0-9\u0600-\u06FF]+/g, "-")
         .replace(/^-|-$/g, "")
-      setFormData((prev) => ({ ...prev, slug }))
+      // Add a unique suffix to avoid duplicates
+      const uniqueSlug = `${baseSlug}-${Date.now()}`
+      setFormData((prev) => ({ ...prev, slug: uniqueSlug }))
     }
   }, [formData.name])
 
@@ -201,12 +211,27 @@ export default function NewProductPage() {
         }
       }
 
-      // Validate category selection
-      if (!formData.categoryId) {
+      // Validate hierarchical selection
+      if (!hierarchySelection.animalId) {
+        throw new Error("Veuillez sélectionner un animal")
+      }
+      if (!hierarchySelection.categoryId) {
         throw new Error("Veuillez sélectionner une catégorie")
       }
 
-      // Create product
+      console.log("[NewProductPage] Hierarchy selection:", {
+        animalId: hierarchySelection.animalId,
+        categoryId: hierarchySelection.categoryId,
+        subcategoryId: hierarchySelection.subcategoryId,
+        brandId: hierarchySelection.brandId,
+      })
+
+      // Log subcategories for debugging
+      console.log("[NewProductPage] All available subcategories:", subcategories)
+      const selectedSubcategory = subcategories.find(s => s.id === hierarchySelection.subcategoryId)
+      console.log("[NewProductPage] Selected subcategory details:", selectedSubcategory)
+
+      // Create product with hierarchical data
       const productData = {
         name: formData.name,
         slug: formData.slug,
@@ -215,8 +240,10 @@ export default function NewProductPage() {
         originalPrice: formData.originalPrice ? parseInt(formData.originalPrice) : null,
         discount: formData.discount ? parseInt(formData.discount) : null,
         stock: parseInt(formData.stock),
-        categoryId: formData.categoryId,
-        brandId: formData.brandId || null,
+        animalId: hierarchySelection.animalId,
+        categoryId: hierarchySelection.categoryId,
+        subcategoryId: hierarchySelection.subcategoryId || null,
+        brandId: hierarchySelection.brandId || null,
         shortDescription: formData.shortDescription || null,
         description: formData.description || null,
         tags: formData.tags ? formData.tags.split(",").map((t) => t.trim()) : [],
@@ -227,6 +254,8 @@ export default function NewProductPage() {
           alt: formData.name,
         })),
       }
+      
+      console.log("[NewProductPage] Full product data to be sent:", productData)
 
       const res = await fetch("/api/admin/products", {
         method: "POST",
@@ -234,10 +263,16 @@ export default function NewProductPage() {
         body: JSON.stringify(productData),
       })
 
+      console.log("[NewProductPage] API response status:", res.status)
+
       if (!res.ok) {
         const error = await res.json()
+        console.error("[NewProductPage] API error response:", error)
         throw new Error(error.error || "Échec de la création du produit")
       }
+
+      const result = await res.json()
+      console.log("[NewProductPage] Product created successfully:", result)
 
       toast({
         title: "Succès",
@@ -257,9 +292,6 @@ export default function NewProductPage() {
       setLoading(false)
     }
   }
-
-  // Build flat category list with hierarchy
-  const mainCategories = categories.filter((cat) => !cat.parentId)
 
   return (
     <div className="space-y-6">
@@ -443,76 +475,29 @@ export default function NewProductPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Organisation</CardTitle>
+                <CardTitle>Organisation du produit</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="mainCategoryId">Catégorie principale *</Label>
-                  <Select
-                    required
-                    value={mainCategoryId}
-                    onValueChange={setMainCategoryId}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sélectionner une catégorie" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {mainCategories.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <ProductHierarchicalSelector
+                  animals={ANIMALS}
+                  categories={categories}
+                  subcategories={subcategories}
+                  brands={brands}
+                  onSelectionChange={setHierarchySelection}
+                  loading={loading}
+                />
+
+                {/* Debug Info */}
+                <div className="text-xs bg-amber-50 border border-amber-200 p-3 rounded">
+                  <strong>Debug Info:</strong>
+                  <div>Categories: {categories.length}</div>
+                  <div>Subcategories: {subcategories.length}</div>
+                  <div>Selected: Animal={hierarchySelection.animalId}, Category={hierarchySelection.categoryId}, SubCat={hierarchySelection.subcategoryId}</div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="subCategoryId">Catégorie secondaire *</Label>
-                  <Select
-                    required
-                    value={subCategoryId}
-                    onValueChange={setSubCategoryId}
-                    disabled={!mainCategoryId || subcategories.length === 0}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={
-                        !mainCategoryId 
-                          ? "Sélectionnez d'abord une catégorie" 
-                          : subcategories.length === 0
-                          ? "Pas de sous-catégories"
-                          : "Sélectionner une sous-catégorie"
-                      } />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {subcategories.map((sub) => (
-                        <SelectItem key={sub.id} value={sub.id}>
-                          {sub.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <SubcategoryDebugger />
 
-                <div className="space-y-2">
-                  <Label htmlFor="brandId">Marque</Label>
-                  <Select
-                    value={formData.brandId}
-                    onValueChange={(value) => setFormData((prev) => ({ ...prev, brandId: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sélectionner une marque" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {brands.map((brand) => (
-                        <SelectItem key={brand.id} value={brand.id}>
-                          {brand.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
+                <div className="space-y-2 pt-4 border-t">
                   <Label htmlFor="tags">Tags</Label>
                   <Input
                     id="tags"

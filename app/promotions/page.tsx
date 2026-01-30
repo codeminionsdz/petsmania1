@@ -125,7 +125,7 @@ export default function PromotionsPage() {
               <h1 className="text-3xl md:text-4xl font-bold">Promotions & Offres</h1>
             </div>
             <p className="text-lg text-white/90 max-w-2xl mb-6">
-              Découvrez nos meilleures offres et promotions sur une large sélection de produits de parapharmacie
+              Découvrez nos meilleures offres et promotions pour les soins de votre animal de compagnie
             </p>
             <div className="flex flex-wrap gap-4">
               <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm text-base py-2 px-4">

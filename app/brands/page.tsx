@@ -7,8 +7,8 @@ import { Search } from "lucide-react"
 import { getBrands } from "@/lib/data"
 
 export const metadata: Metadata = {
-  title: "All Brands | PharmaCare",
-  description: "Shop from trusted European parapharmacy brands - CeraVe, La Roche-Posay, Vichy, Bioderma, and more.",
+  title: "All Brands | Petsmania",
+  description: "Shop from trusted pet product brands - premium quality pet food, toys, and accessories from top European manufacturers.",
 }
 
 export default async function BrandsPage() {
@@ -23,7 +23,7 @@ export default async function BrandsPage() {
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold">Our Brands</h1>
           <p className="text-muted-foreground mt-2">
-            We partner with the world's most trusted parapharmacy and healthcare brands
+            We partner with the world's most trusted pet product brands and manufacturers
           </p>
         </div>
 

@@ -1,0 +1,41 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <!-- Background -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d9488;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#0d9488;stop-opacity:0.2" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main background circle -->
+  <circle cx="100" cy="100" r="95" fill="url(#bgGradient)" stroke="#0d9488" stroke-width="2"/>
+  
+  <!-- Dog head silhouette -->
+  <!-- Head -->
+  <ellipse cx="100" cy="75" rx="35" ry="38" fill="#0d9488"/>
+  
+  <!-- Ears -->
+  <ellipse cx="75" cy="50" rx="12" ry="20" fill="#0d9488" transform="rotate(-20 75 50)"/>
+  <ellipse cx="125" cy="50" rx="12" ry="20" fill="#0d9488" transform="rotate(20 125 50)"/>
+  
+  <!-- Snout -->
+  <ellipse cx="100" cy="85" rx="18" ry="15" fill="#ec4899"/>
+  
+  <!-- Eyes -->
+  <circle cx="90" cy="70" r="4" fill="white"/>
+  <circle cx="110" cy="70" r="4" fill="white"/>
+  
+  <!-- Nose -->
+  <ellipse cx="100" cy="88" rx="4" ry="3" fill="white"/>
+  
+  <!-- Tongue -->
+  <ellipse cx="100" cy="100" rx="3" ry="4" fill="#ec4899"/>
+  
+  <!-- Heart accent -->
+  <path d="M 100 130 Q 90 120 82 120 Q 75 120 75 127 Q 75 138 100 155 Q 125 138 125 127 Q 125 120 118 120 Q 110 120 100 130" fill="#ec4899" opacity="0.7"/>
+  
+  <!-- Text -->
+  <text x="100" y="175" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#0d9488">
+    PETS MANIA
+  </text>
+</svg>

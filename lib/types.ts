@@ -1,3 +1,16 @@
+export type AnimalType = "cat" | "dog" | "bird" | "other"
+
+export interface Animal {
+  id: string
+  name: AnimalType
+  slug: string
+  displayName: string
+  emoji?: string
+  description?: string
+  featured: boolean
+  isActive: boolean
+}
+
 export interface Product {
   id: string
   name: string
@@ -8,14 +21,28 @@ export interface Product {
   originalPrice?: number
   discount?: number
   images: string[]
-  categoryId: string
-  categoryName: string
-  brandId: string
-  brandName: string
+  // Mandatory: animal
+  animalId: string
+  animalName?: AnimalType
+  animalDisplayName?: string
+  animalEmoji?: string
+  // Category hierarchy
+  categoryId?: string | null
+  categoryName?: string | null
+  categorySlug?: string | null
+  subcategoryId?: string | null
+  subcategoryName?: string | null
+  subcategorySlug?: string | null
+  // Brand (optional)
+  brandId?: string | null
+  brandName?: string | null
+  brandSlug?: string | null
   stock: number
   sku: string
   featured: boolean
   tags: string[]
+  // Backward compatibility: old animalType field still supported
+  animalType?: AnimalType | null
   createdAt: string
   updatedAt: string
 }
@@ -27,10 +54,40 @@ export interface Category {
   description: string
   image: string
   parentId?: string | null
+  parent_id?: string | null
   parentName?: string
   parentSlug?: string
+  level: number
   productCount: number
+  product_count?: number
   children?: Category[]
+  // Animal support
+  animalType?: AnimalType | null
+  animal_type?: AnimalType | null
+  animalTypes?: AnimalType[]
+  displayOrder: number
+  display_order?: number
+  isActive: boolean
+  is_active?: boolean
+}
+
+export interface Subcategory {
+  id: string
+  name: string
+  slug: string
+  description?: string
+  image?: string
+  category_id: string
+  categoryId?: string // Alias for backward compatibility
+  categoryName?: string
+  animalType?: AnimalType | null
+  animal_type?: AnimalType | null
+  displayOrder: number
+  display_order?: number
+  isActive: boolean
+  is_active?: boolean
+  productCount?: number
+  product_count?: number
 }
 
 export interface Brand {
@@ -41,6 +98,15 @@ export interface Brand {
   logo: string
   productCount: number
   featured: boolean
+  // Animal associations
+  animalTypes?: AnimalType[]
+}
+
+export interface BrandAnimal {
+  id: string
+  brandId: string
+  animalType: AnimalType
+  isActive: boolean
 }
 
 export interface CartItem {
@@ -109,7 +175,11 @@ export interface PromoCode {
 }
 
 export interface FilterOptions {
+  // Hierarchical filters
+  animalType?: AnimalType
+  animalTypes?: AnimalType[]
   categories?: string[]
+  subcategories?: string[]
   brands?: string[]
   minPrice?: number
   maxPrice?: number

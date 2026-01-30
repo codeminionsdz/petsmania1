@@ -121,18 +121,40 @@ function HeroCarouselContent() {
                     backgroundColor: '#8bb895',
                   }}
                 >
-                  {/* Overlay gradient for better text contrast */}
+                  {/* Animated premium gradient overlay */}
+                  <div className="absolute inset-0 premium-gradient-overlay" />
+                  
+                  {/* Base dark overlay for text contrast */}
                   <div 
                     className="absolute inset-0"
                     style={{
                       background: `linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.1) 100%)`,
                     }}
                   />
+                  
+                  {/* Decorative glow orbs */}
+                  <div className="hero-glow-orb hero-glow-orange animate-shimmer-glow" style={{ top: '-10%', right: '5%', width: '300px', height: '300px' }} />
+                  <div className="hero-glow-orb hero-glow-green animate-shimmer-glow animation-delay-400" style={{ bottom: '-5%', left: '10%', width: '250px', height: '250px' }} />
+                  
+                  {/* Subtle paw print decorations */}
+                  <svg className="hero-paw-pattern animate-float-gentle" style={{ top: '10%', right: '8%', width: '80px', height: '80px' }} viewBox="0 0 100 100">
+                    <circle cx="50" cy="30" r="12" fill="#FF8C42" />
+                    <circle cx="20" cy="60" r="10" fill="#FF8C42" />
+                    <circle cx="50" cy="70" r="10" fill="#FF8C42" />
+                    <circle cx="80" cy="60" r="10" fill="#FF8C42" />
+                  </svg>
+                  
+                  <svg className="hero-paw-pattern animate-float-gentle animation-delay-800" style={{ bottom: '15%', right: '15%', width: '60px', height: '60px' }} viewBox="0 0 100 100">
+                    <circle cx="50" cy="30" r="12" fill="#4CAF50" />
+                    <circle cx="20" cy="60" r="10" fill="#4CAF50" />
+                    <circle cx="50" cy="70" r="10" fill="#4CAF50" />
+                    <circle cx="80" cy="60" r="10" fill="#4CAF50" />
+                  </svg>
 
                   <div className="container relative mx-auto px-4 py-16 md:py-24 lg:py-32 z-10">
                   <div className="max-w-3xl mx-auto text-center">
                     {/* Animated badge */}
-                    <div className="inline-flex items-center gap-2 px-5 py-2 bg-teal-600 backdrop-blur-sm border border-teal-400 text-white text-sm font-semibold rounded-full mb-6 shadow-lg animate-fade-in-up hover:bg-teal-700 transition-colors">
+                    <div className="inline-flex items-center gap-2 px-5 py-2 bg-primary backdrop-blur-sm border border-primary/30 text-white text-sm font-semibold rounded-full mb-6 shadow-lg animate-fade-in-up hover:bg-orange-600 transition-colors">
                       <Icon className="h-4 w-4 animate-pulse" />
                       <span>{t(slide.badgeKey as any)}</span>
                     </div>
@@ -153,13 +175,13 @@ function HeroCarouselContent() {
 
                     {/* Action buttons */}
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up animation-delay-600">
-                      <Button size="lg" className="group shadow-xl hover:shadow-2xl transition-all bg-teal-600 hover:bg-teal-700 text-white font-semibold" asChild>
+                      <Button size="lg" className="group btn-hover-lift shadow-xl bg-primary hover:bg-orange-600 text-white font-semibold" asChild>
                         <Link href={slide.primaryBtnHref}>
                           {t(slide.primaryBtnKey as any)}
                           <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                       </Button>
-                      <Button size="lg" variant="outline" className="bg-white text-gray-900 shadow-xl hover:bg-gray-50 font-semibold border-2 border-white hover:shadow-2xl transition-all" asChild>
+                      <Button size="lg" variant="outline" className="btn-hover-lift bg-white text-gray-900 shadow-xl hover:bg-gray-50 font-semibold border-2 border-white" asChild>
                         <Link href={slide.secondaryBtnHref}>{t(slide.secondaryBtnKey as any)}</Link>
                       </Button>
                     </div>
@@ -181,7 +203,7 @@ function HeroCarouselContent() {
             className={cn(
               "h-3 rounded-full transition-all duration-300 shadow-lg",
               index === selectedIndex
-                ? "w-8 bg-teal-500 shadow-teal-500/50"
+                ? "w-8 bg-primary shadow-primary/50"
                 : "w-3 bg-white/50 hover:bg-white/75"
             )}
             aria-label={`Go to slide ${index + 1}`}

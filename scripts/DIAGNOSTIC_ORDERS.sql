@@ -15,10 +15,11 @@ SELECT
   '2. PROFILES' as check_name,
   COUNT(*) as count,
   email,
-  phone
+  phone,
+  MAX(created_at) as latest_created
 FROM profiles
 GROUP BY email, phone
-ORDER BY created_at DESC
+ORDER BY MAX(created_at) DESC
 LIMIT 5;
 
 -- 3. Check if orders have been linked
@@ -71,12 +72,12 @@ LIMIT 10;
 
 -- 7. Check RLS policies status
 SELECT 
+  schemaname,
   tablename,
   policyname,
   permissive,
-  roles,
-  SUBSTRING(qual, 1, 100) as select_condition,
-  SUBSTRING(with_check, 1, 100) as insert_condition
+  qual as select_condition,
+  with_check as insert_condition
 FROM pg_policies
 WHERE tablename IN ('orders', 'order_items', 'addresses', 'profiles')
 ORDER BY tablename, policyname;
@@ -86,7 +87,7 @@ SELECT
   schemaname,
   tablename,
   rowsecurity
-FROM pg_class
+FROM pg_tables
 WHERE tablename IN ('orders', 'order_items', 'addresses', 'profiles')
   AND schemaname = 'public';
 

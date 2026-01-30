@@ -2,23 +2,23 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, ShieldCheck, Truck, Clock, Award } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ProductCard } from "@/components/product/product-card"
 import { MainCategoryCard } from "@/components/category/main-category-card"
 import { BrandCard } from "@/components/brand/brand-card"
 import { CartDrawer } from "@/components/cart/cart-drawer"
 import { HeroCarousel } from "@/components/layout/hero-carousel"
+import { AnimalCategoriesSection } from "@/components/home/animal-categories-section"
 import { useTranslation } from "@/hooks/use-translation"
-import type { Category, Product, Brand } from "@/lib/types"
+import type { Product, Brand } from "@/lib/types"
 
 interface HomeContentProps {
-  categories: Category[]
   brands: Brand[]
   featuredProducts: Product[]
 }
 
-export function HomeContent({ categories, brands, featuredProducts }: HomeContentProps) {
+export function HomeContent({ brands, featuredProducts }: HomeContentProps) {
   const { t } = useTranslation()
 
   return (
@@ -28,72 +28,11 @@ export function HomeContent({ categories, brands, featuredProducts }: HomeConten
       {/* Hero Carousel */}
       <HeroCarousel />
 
-      {/* Trust Badges */}
-      <section className="py-8 border-b border-border">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-full bg-primary/10">
-                <ShieldCheck className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold">{t("home.authentic_products")}</p>
-                <p className="text-sm text-muted-foreground">{t("home.authentic_guarantee")}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-full bg-primary/10">
-                <Truck className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold">{t("home.fast_delivery")}</p>
-                <p className="text-sm text-muted-foreground">{t("home.delivery_time")}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-full bg-primary/10">
-                <Clock className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold">{t("home.expert_support")}</p>
-                <p className="text-sm text-muted-foreground">{t("home.support_hours")}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-full bg-primary/10">
-                <Award className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold">{t("home.best_prices")}</p>
-                <p className="text-sm text-muted-foreground">{t("home.guaranteed")}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Animal Selection - PRIMARY ENTRY POINT */}
+      <AnimalCategoriesSection />
 
-      {/* Categories Section */}
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-bold">{t("home.categories")}</h2>
-              <p className="text-muted-foreground mt-1">{t("home.find_what_you_need")}</p>
-            </div>
-            <Button variant="ghost" asChild>
-              <Link href="/categories">
-                {t("home.view_all")}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {categories.slice(0, 8).map((category) => (
-              <MainCategoryCard key={category.id} category={category} />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Categories Section - Now showing categories for each animal */}
+      {/* Removed: This section is now replaced by the Animal Selection section above */}
 
       {/* Featured Products */}
       <section className="py-12 md:py-16 bg-secondary">

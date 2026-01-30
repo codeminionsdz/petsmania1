@@ -1,18 +1,27 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDown, SlidersHorizontal, X } from "lucide-react"
+import { SlidersHorizontal, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { HierarchicalFilter } from "@/components/filters/hierarchical-filter"
 import { formatPrice } from "@/lib/format"
-import type { Brand, Category, FilterOptions } from "@/lib/types"
+import type { Brand, Category, FilterOptions, AnimalType, Subcategory } from "@/lib/types"
+
+const ANIMALS = [
+  { value: "cat", label: "Chats", emoji: "🐱" },
+  { value: "dog", label: "Chiens", emoji: "🐕" },
+  { value: "bird", label: "Oiseaux", emoji: "🐦" },
+  { value: "other", label: "Autres", emoji: "🐾" },
+] as const
 
 interface ProductFiltersProps {
   categories?: Category[]
+  subcategories?: Subcategory[]
   brands?: Brand[]
   filters: FilterOptions
   onFilterChange: (filters: FilterOptions) => void
@@ -21,24 +30,13 @@ interface ProductFiltersProps {
 
 export function ProductFilters({
   categories = [],
+  subcategories = [],
   brands = [],
   filters,
   onFilterChange,
   maxPrice = 50000,
 }: ProductFiltersProps) {
   const [priceRange, setPriceRange] = useState<[number, number]>([filters.minPrice || 0, filters.maxPrice || maxPrice])
-
-  const handleCategoryChange = (categoryId: string, checked: boolean) => {
-    const current = filters.categories || []
-    const updated = checked ? [...current, categoryId] : current.filter((id) => id !== categoryId)
-    onFilterChange({ ...filters, categories: updated })
-  }
-
-  const handleBrandChange = (brandId: string, checked: boolean) => {
-    const current = filters.brands || []
-    const updated = checked ? [...current, brandId] : current.filter((id) => id !== brandId)
-    onFilterChange({ ...filters, brands: updated })
-  }
 
   const handlePriceChange = (values: number[]) => {
     setPriceRange([values[0], values[1]])
@@ -59,7 +57,10 @@ export function ProductFilters({
 
   const hasActiveFilters =
     (filters.categories && filters.categories.length > 0) ||
+    (filters.subcategories && filters.subcategories.length > 0) ||
     (filters.brands && filters.brands.length > 0) ||
+    (filters.animalType) ||
+    (filters.animalTypes && filters.animalTypes.length > 0) ||
     filters.minPrice ||
     filters.maxPrice ||
     filters.inStock
@@ -73,61 +74,23 @@ export function ProductFilters({
         </Button>
       )}
 
-      {/* Categories */}
-      {categories.length > 0 && (
-        <Collapsible defaultOpen>
-          <CollapsibleTrigger className="flex items-center justify-between w-full py-2 font-semibold">
-            Categories
-            <ChevronDown className="h-4 w-4" />
-          </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-3 pt-3">
-            {categories.map((category) => (
-              <div key={category.id} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`cat-${category.id}`}
-                  checked={filters.categories?.includes(category.id) || false}
-                  onCheckedChange={(checked) => handleCategoryChange(category.id, checked as boolean)}
-                />
-                <Label htmlFor={`cat-${category.id}`} className="text-sm font-normal cursor-pointer flex-1">
-                  {category.name}
-                  <span className="text-muted-foreground ml-1">({category.productCount})</span>
-                </Label>
-              </div>
-            ))}
-          </CollapsibleContent>
-        </Collapsible>
-      )}
-
-      {/* Brands */}
-      {brands.length > 0 && (
-        <Collapsible defaultOpen>
-          <CollapsibleTrigger className="flex items-center justify-between w-full py-2 font-semibold">
-            Brands
-            <ChevronDown className="h-4 w-4" />
-          </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-3 pt-3">
-            {brands.map((brand) => (
-              <div key={brand.id} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`brand-${brand.id}`}
-                  checked={filters.brands?.includes(brand.id) || false}
-                  onCheckedChange={(checked) => handleBrandChange(brand.id, checked as boolean)}
-                />
-                <Label htmlFor={`brand-${brand.id}`} className="text-sm font-normal cursor-pointer flex-1">
-                  {brand.name}
-                  <span className="text-muted-foreground ml-1">({brand.productCount})</span>
-                </Label>
-              </div>
-            ))}
-          </CollapsibleContent>
-        </Collapsible>
-      )}
+      {/* Hierarchical Filter: Animal → Category → Subcategory → Brand */}
+      <HierarchicalFilter
+        animals={ANIMALS as Array<{ value: AnimalType; label: string; emoji: string }>}
+        allCategories={categories}
+        allSubcategories={subcategories}
+        allBrands={brands}
+        filters={filters}
+        onFilterChange={onFilterChange}
+      />
 
       {/* Price Range */}
       <Collapsible defaultOpen>
         <CollapsibleTrigger className="flex items-center justify-between w-full py-2 font-semibold">
           Price Range
-          <ChevronDown className="h-4 w-4" />
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-4">
           <Slider
@@ -177,7 +140,7 @@ export function ProductFilters({
           <SheetHeader>
             <SheetTitle>Filters</SheetTitle>
           </SheetHeader>
-          <div className="mt-6">
+          <div className="mt-6 overflow-y-auto max-h-[90vh]">
             <FiltersContent />
           </div>
         </SheetContent>

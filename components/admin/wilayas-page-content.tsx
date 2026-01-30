@@ -48,13 +48,24 @@ export function WilayasPageContent({ initialWilayas }: WilayasPageContentProps) 
     setIsLoading(true)
 
     const formData = new FormData(e.currentTarget)
+    const shippingValue = formData.get("shipping") as string
+    const daysValue = formData.get("days") as string
+    
+    if (!editingWilaya?.id) {
+      console.error('No wilaya ID found')
+      return
+    }
+
     const data = {
-      id: editingWilaya?.id,
+      id: editingWilaya.id,
+      code: editingWilaya.code,
       name: formData.get("name") as string,
-      shipping_cost: parseInt(formData.get("shipping") as string),
-      delivery_days: parseInt(formData.get("days") as string),
+      shipping_cost: shippingValue ? parseInt(shippingValue) : editingWilaya.shipping_cost,
+      delivery_days: daysValue ? parseInt(daysValue) : editingWilaya.delivery_days,
       is_active: formData.get("active") === "on",
     }
+
+    console.log('[handleSubmit] Data to send:', data)
 
     try {
       const response = await fetch("/api/admin/wilayas", {
@@ -63,7 +74,10 @@ export function WilayasPageContent({ initialWilayas }: WilayasPageContentProps) 
         body: JSON.stringify(data),
       })
 
-      if (!response.ok) throw new Error("Failed to update")
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to update")
+      }
 
       const updated = await response.json()
       
@@ -76,9 +90,10 @@ export function WilayasPageContent({ initialWilayas }: WilayasPageContentProps) 
         description: "Wilaya updated successfully",
       })
     } catch (error) {
+      console.error('[handleSubmit] Error:', error)
       toast({
         title: "Error",
-        description: "Failed to update wilaya",
+        description: error instanceof Error ? error.message : "Failed to update wilaya",
         variant: "destructive",
       })
     } finally {

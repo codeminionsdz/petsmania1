@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { ChevronRight, Package, Search, Loader, AlertCircle } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useTranslation } from "@/hooks/use-translation"
 import { formatPrice, formatDate } from "@/lib/format"
 import { createBrowserClient } from "@supabase/ssr"
 import type { Order } from "@/lib/types"
@@ -30,6 +31,7 @@ export default function OrdersPage() {
   const [authUser, setAuthUser] = useState<any>(null)
   const [linking, setLinking] = useState(false)
   const [success, setSuccess] = useState<string>("")
+  const { t } = useTranslation()
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -256,21 +258,23 @@ export default function OrdersPage() {
           </div>
         ) : filteredOrders.length === 0 ? (
           <div className="text-center py-16">
-            <Package className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h2 className="text-xl font-semibold mb-2">
-              {orders.length === 0 ? "No orders yet" : "No results found"}
+            <div className="inline-block p-4 bg-blue-100 rounded-full mb-4">
+              <Package className="h-12 w-12 text-blue-500" />
+            </div>
+            <h2 className="text-xl font-bold mb-2 text-foreground">
+              {orders.length === 0 ? t("empty.orders_title") : t("empty.search_no_results")}
             </h2>
             <p className="text-muted-foreground mb-6">
               {orders.length === 0
-                ? "Start shopping to see your orders here."
-                : "Try a different search term."}
+                ? t("empty.orders_message")
+                : t("empty.search_message")}
             </p>
             {orders.length === 0 && (
               <Link
                 href="/categories"
                 className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
               >
-                Start Shopping
+                {t("empty.start_shopping")}
               </Link>
             )}
           </div>

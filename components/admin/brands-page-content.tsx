@@ -128,6 +128,13 @@ export function BrandsPageContent() {
     e.preventDefault()
     setSubmitting(true)
 
+    // Debug: show browser cookies to verify auth cookie is present
+    try {
+      console.debug("[BrandsPage] document.cookie:", document.cookie)
+    } catch (e) {
+      console.debug("[BrandsPage] cannot access document.cookie in this environment", e)
+    }
+
     try {
       // Upload logo if new file selected
       let logoUrl = formData.logo
@@ -137,10 +144,16 @@ export function BrandsPageContent() {
         
         const uploadRes = await fetch("/api/admin/upload", {
           method: "POST",
+          credentials: "include",
           body: uploadFormData,
         })
         
-        if (!uploadRes.ok) throw new Error("Échec du téléchargement du logo")
+        if (!uploadRes.ok) {
+          console.error("[BrandsPage] upload failed, status:", uploadRes.status)
+          const errBody = await uploadRes.text()
+          console.error("[BrandsPage] upload response body:", errBody)
+          throw new Error("Échec du téléchargement du logo")
+        }
         
         const { url } = await uploadRes.json()
         logoUrl = url
@@ -159,13 +172,20 @@ export function BrandsPageContent() {
 
       const res = await fetch(url, {
         method,
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(brandData),
       })
 
       if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.error || "Échec de l'opération")
+        let errorBody: any = null
+        try {
+          errorBody = await res.json()
+        } catch (e) {
+          errorBody = await res.text()
+        }
+        console.error("[BrandsPage] create/update brand failed, status:", res.status, "body:", errorBody)
+        throw new Error(errorBody?.error || errorBody?.message || "Échec de l'opération")
       }
 
       toast({
@@ -192,6 +212,7 @@ export function BrandsPageContent() {
     try {
       const res = await fetch(`/api/admin/brands/${id}`, {
         method: "DELETE",
+        credentials: "include",
       })
 
       if (!res.ok) throw new Error("Échec de la suppression")

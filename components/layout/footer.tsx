@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Facebook, Instagram, Mail, Phone, MapPin, Truck, Shield, CreditCard, Clock } from "lucide-react"
+import { Instagram, Mail, Phone, MapPin, Truck, Shield, CreditCard, Clock, Music } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "@/hooks/use-translation"
@@ -12,11 +12,10 @@ function FooterContent() {
 
   const footerLinks = {
     shop: [
-      { name: t("footer.all_categories"), href: "/categories" },
-      { name: t("footer.skincare"), href: "/categories/skincare" },
-      { name: t("footer.vitamins"), href: "/categories/vitamins-supplements" },
-      { name: t("footer.hair_care"), href: "/categories/hair-care" },
-      { name: t("footer.baby_mom"), href: "/categories/baby-mom" },
+      { name: t("footer.cats"), href: "/cats" },
+      { name: t("footer.dogs"), href: "/dogs" },
+      { name: t("footer.birds"), href: "/birds" },
+      { name: t("footer.others"), href: "/others" },
       { name: t("footer.brands"), href: "/brands" },
     ],
     support: [
@@ -37,9 +36,9 @@ function FooterContent() {
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {trustFeatures.map((feature) => (
-              <div key={feature.title} className="flex items-start gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <feature.icon className="h-5 w-5 text-primary" />
+              <div key={feature.title} className="flex items-start gap-3 group/feature">
+                <div className="p-2 rounded-lg bg-primary/10 transition-all duration-300 group-hover/feature:bg-primary/20 group-hover/feature:scale-110">
+                  <feature.icon className="h-5 w-5 text-primary transition-transform duration-300 group-hover/feature:scale-110" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-foreground">{feature.title}</h4>
@@ -58,12 +57,12 @@ function FooterContent() {
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="relative w-12 h-12 bg-white rounded-lg p-1 shadow-sm">
-                <Image src="/images/image.png" alt="Parapharmacie l'Olivier" width={48} height={48} className="w-full h-full object-contain" />
+                <Image src="/logo.png" alt="Petsmania" width={48} height={48} className="w-full h-full object-contain" />
               </div>
-              <span className="text-2xl font-bold text-primary">Parapharmacie l'Olivier</span>
+              <span className="text-2xl font-bold text-primary">Petsmania</span>
             </Link>
             <p className="text-muted-foreground mb-6 max-w-sm">
-              {t("footer.description")}
+              Premium pet store specializing in food, accessories, toys, and pet care products for cats, dogs, birds, and other animals. Quality products delivered across Algeria.
             </p>
 
             {/* Newsletter */}
@@ -78,22 +77,22 @@ function FooterContent() {
             {/* Social Links */}
             <div className="flex gap-4">
               <a
-                href="https://www.facebook.com/share/16msr2HLCG/?mibextid=wwXIfr"
+                href="https://www.instagram.com/petsmania_341"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-background hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="p-2 rounded-full bg-background hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 hover:-translate-y-1"
               >
-                <Facebook className="h-5 w-5" />
-                <span className="sr-only">Facebook</span>
+                <Instagram className="h-5 w-5 transition-transform duration-300" />
+                <span className="sr-only">Instagram</span>
               </a>
               <a
-                href="https://www.instagram.com/parapharmacie_de_lolivier?igsh=MWZmOGNhMHRyeWJmNw=="
+                href="https://www.tiktok.com/@petsmania345"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-background hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="p-2 rounded-full bg-background hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 hover:-translate-y-1"
               >
-                <Instagram className="h-5 w-5" />
-                <span className="sr-only">Instagram</span>
+                <Music className="h-5 w-5 transition-transform duration-300" />
+                <span className="sr-only">TikTok</span>
               </a>
             </div>
           </div>
@@ -104,7 +103,7 @@ function FooterContent() {
             <ul className="space-y-3">
               {footerLinks.shop.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-muted-foreground hover:text-primary transition-colors">
+                  <Link href={link.href} className="text-muted-foreground hover:text-primary transition-all duration-300 hover:translate-x-1">
                     {link.name}
                   </Link>
                 </li>
@@ -132,25 +131,32 @@ function FooterContent() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <a 
-                  href="https://maps.app.goo.gl/N7o8sWZ7zf9bVn4E7" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {t("footer.address")}
-                </a>
+                <div className="text-muted-foreground">
+                  Bordj Bou Arreridj, Algeria
+                </div>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-5 w-5 text-primary shrink-0" />
-                <a href="tel:+213770867403" className="text-muted-foreground hover:text-primary">
-                  {t("footer.phone")}
+                <a href="tel:+213770874393" className="text-muted-foreground hover:text-primary">
+                  +213 770 874 393
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-5 w-5 text-primary shrink-0" />
-                <a href="mailto:Parapharmacielolivier@gmail.com" className="text-muted-foreground hover:text-primary">
-                  {t("footer.email")}
+                <a href="mailto:petsmania@gmail.com" className="text-muted-foreground hover:text-primary">
+                  petsmania@gmail.com
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <Instagram className="h-5 w-5 text-primary shrink-0" />
+                <a href="https://www.instagram.com/petsmania_341" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                  @petsmania_341
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <Music className="h-5 w-5 text-primary shrink-0" />
+                <a href="https://www.tiktok.com/@petsmania345" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                  @petsmania345
                 </a>
               </li>
             </ul>
@@ -163,7 +169,7 @@ function FooterContent() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Parapharmacie l'Olivier. {t("footer.copyright")}
+              © {new Date().getFullYear()} Petsmania. {t("footer.copyright")}
             </p>
             <div className="flex gap-6 text-sm">
               <Link href="/privacy" className="text-muted-foreground hover:text-primary">

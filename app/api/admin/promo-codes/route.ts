@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getSupabaseServerClient } from "@/lib/supabase/server"
+import { getSupabaseAdminClient } from "@/lib/supabase/server"
 
 // GET: Fetch all promo codes
 export async function GET() {
   try {
-    const supabase = await getSupabaseServerClient()
+    const supabase = await getSupabaseAdminClient()
     
     const { data, error } = await supabase
       .from("promo_codes")
@@ -23,7 +23,7 @@ export async function GET() {
 // POST: Create new promo code
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await getSupabaseServerClient()
+    const supabase = await getSupabaseAdminClient()
     const body = await request.json()
 
     console.log("Creating promo code with data:", body)
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
 // PATCH: Update promo code
 export async function PATCH(request: NextRequest) {
   try {
-    const supabase = await getSupabaseServerClient()
+    const supabase = await getSupabaseAdminClient()
     const body = await request.json()
 
     const updateData = {
@@ -117,7 +117,7 @@ export async function PATCH(request: NextRequest) {
 // DELETE: Delete promo code
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = await getSupabaseServerClient()
+    const supabase = await getSupabaseAdminClient()
     const { searchParams } = new URL(request.url)
     const id = searchParams.get("id")
 

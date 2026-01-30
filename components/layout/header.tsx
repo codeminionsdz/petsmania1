@@ -24,10 +24,13 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { useCart } from "@/lib/cart-context"
+import { CategoriesMenu } from "@/components/layout/categories-menu"
 import type { Category } from "@/lib/types"
 import { getCategoryIcon } from "@/lib/category-icons"
 import { useTranslation } from "@/hooks/use-translation"
+import { usePathname } from "next/navigation"
 import { LanguageSwitcher } from "@/components/layout/language-switcher"
+import { getAnimalRoute } from "@/lib/animal-utils"
 
 interface HeaderProps {
   categories?: Category[]
@@ -45,27 +48,64 @@ export function Header({ categories: initialCategories }: HeaderProps) {
   const [settings, setSettings] = useState<Settings | null>(null)
   const { itemCount, toggleCart } = useCart()
   const { t } = useTranslation()
+  const pathname = usePathname()
+
+  // Stable ref to track previous pathname across component remounts
+  let headerPrevPathnameRef = (globalThis as any).__headerPrevPathnameRef as { current?: string } | undefined
+  if (!headerPrevPathnameRef) {
+    ;(globalThis as any).__headerPrevPathnameRef = { current: undefined }
+    headerPrevPathnameRef = (globalThis as any).__headerPrevPathnameRef
+  }
   
   // استخدام البيانات المُمررة مباشرة - مع التأكد من أنها محملة
   const categories = initialCategories || []
   const hasCategories = categories.length > 0
 
-  // Load settings on mount
+  const ANIMALS = [
+    { value: "cat", label: "🐱 Chats" },
+    { value: "dog", label: "🐕 Chiens" },
+    { value: "bird", label: "🐦 Oiseaux" },
+    { value: "other", label: "🐾 Autres" },
+  ] as const
+  // Load settings on mount (guarded to avoid updates after unmount)
   useEffect(() => {
+    let mounted = true
+
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch("/api/admin/settings")
+        const data = await response.json()
+        if (mounted && data?.success) {
+          setSettings(data.data)
+        }
+      } catch (error) {
+        console.error("Error fetching settings:", error)
+      }
+    }
+
     fetchSettings()
+
+    return () => {
+      mounted = false
+    }
   }, [])
 
-  const fetchSettings = async () => {
-    try {
-      const response = await fetch("/api/admin/settings")
-      const data = await response.json()
-      if (data.success) {
-        setSettings(data.data)
-      }
-    } catch (error) {
-      console.error("Error fetching settings:", error)
+  // Close mobile sheet after navigation — do it asynchronously to avoid nested updates
+  useEffect(() => {
+    if (!isMobileMenuOpen) return
+    // Only close when pathname actually changed (skip initial mount)
+    let prev = (headerPrevPathnameRef.current)
+    if (prev === undefined) {
+      headerPrevPathnameRef.current = pathname
+      return
     }
-  }
+
+    if (prev !== pathname) {
+      const id = window.setTimeout(() => setIsMobileMenuOpen(false), 0)
+      headerPrevPathnameRef.current = pathname
+      return () => clearTimeout(id)
+    }
+  }, [pathname, isMobileMenuOpen])
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b border-border">
@@ -98,14 +138,14 @@ export function Header({ categories: initialCategories }: HeaderProps) {
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <div className="relative w-10 h-10 md:w-12 md:h-12 bg-white rounded-lg p-0.5 shadow-sm">
               <Image
-                src="/images/image.png"
-                alt="Parapharmacie l'Olivier"
+                src="/logo.png"
+                alt="Petsmania"
                 width={48}
                 height={48}
                 className="w-full h-full object-contain"
               />
             </div>
-            <span className="text-xl md:text-2xl font-bold text-primary hidden sm:block">Parapharmacie l'Olivier</span>
+            <span className="text-xl md:text-2xl font-bold text-primary hidden sm:block">Petsmania</span>
           </Link>
 
           {/* Desktop Search */}
@@ -124,8 +164,8 @@ export function Header({ categories: initialCategories }: HeaderProps) {
           {/* Actions */}
           <div className="flex items-center gap-2">
             {/* Mobile Search Toggle */}
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsSearchOpen(!isSearchOpen)}>
-              <Search className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="md:hidden transition-all duration-300 hover:scale-110 hover:bg-primary/10" onClick={() => setIsSearchOpen(!isSearchOpen)}>
+              <Search className="h-5 w-5 transition-transform duration-300" />
               <span className="sr-only">{t("action.search")}</span>
             </Button>
 
@@ -133,9 +173,9 @@ export function Header({ categories: initialCategories }: HeaderProps) {
             <LanguageSwitcher />
 
             {/* Wishlist */}
-            <Button variant="ghost" size="icon" asChild className="hidden sm:flex">
+            <Button variant="ghost" size="icon" asChild className="hidden sm:flex transition-all duration-300 hover:scale-110 hover:bg-primary/10">
               <Link href="/account/wishlist">
-                <Heart className="h-5 w-5" />
+                <Heart className="h-5 w-5 transition-transform duration-300" />
                 <span className="sr-only">{t("header.favorite")}</span>
               </Link>
             </Button>
@@ -143,8 +183,8 @@ export function Header({ categories: initialCategories }: HeaderProps) {
             {/* Account */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="transition-all duration-300 hover:scale-110 hover:bg-primary/10">
+                  <User className="h-5 w-5 transition-transform duration-300" />
                   <span className="sr-only">{t("header.account")}</span>
                 </Button>
               </DropdownMenuTrigger>
@@ -169,10 +209,10 @@ export function Header({ categories: initialCategories }: HeaderProps) {
             </DropdownMenu>
 
             {/* Cart */}
-            <Button variant="ghost" size="icon" className="relative" onClick={toggleCart}>
-              <ShoppingCart className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="relative transition-all duration-300 hover:scale-110 hover:bg-primary/10 group/cart" onClick={toggleCart}>
+              <ShoppingCart className="h-5 w-5 transition-transform duration-300 group-hover/cart:scale-110" />
               {itemCount > 0 && (
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs bg-primary text-primary-foreground">
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs bg-primary text-primary-foreground transition-all duration-300 group-hover/cart:scale-125">
                   {itemCount}
                 </Badge>
               )}
@@ -192,75 +232,40 @@ export function Header({ categories: initialCategories }: HeaderProps) {
               <SheetContent side="right" className="w-80 overflow-y-auto">
                 <SheetTitle className="text-xl font-bold">{t("header.menu")}</SheetTitle>
                 <nav className="flex flex-col gap-2 mt-8">
-                  <Link
-                    href="/categories"
-                    className="text-lg font-semibold hover:text-primary py-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
+                    <Link
+                      href="/categories"
+                      className="text-lg font-semibold hover:text-primary py-2 transition-all duration-300 hover:translate-x-1"
+                    >
                     {t("header.all_categories")}
                   </Link>
 
-                  {categories.map((category) => (
-                    <div key={category.id} className="border-b border-border pb-3">
-                      <button
-                        className="flex items-center justify-between w-full py-3 text-left font-semibold hover:text-primary transition-colors duration-200"
-                        onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
-                      >
-                        <Link
-                          href={`/categories/${category.slug}`}
-                          className="text-foreground hover:text-primary transition-colors duration-200"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setIsMobileMenuOpen(false)
-                          }}
-                        >
-                          {category.name}
-                        </Link>
-                        {category.children && category.children.length > 0 && (
-                          <ChevronDown
-                            className={`h-4 w-4 transition-transform duration-200 ${expandedCategory === category.id ? "rotate-180" : ""}`}
-                          />
-                        )}
-                      </button>
+                  
 
-                      {expandedCategory === category.id && category.children && (
-                        <div className="pl-4 flex flex-col gap-2 mt-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                          {category.children.map((sub) => (
-                            <Link
-                              key={sub.id}
-                              href={`/categories/${sub.slug}`}
-                              className="text-muted-foreground hover:text-primary py-2 text-sm transition-colors duration-200"
-                              onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                              {sub.name}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
+                  {/* Simplified: show animals only in mobile menu */}
+                  <div className="mt-4">
+                    <h3 className="py-2 font-semibold text-lg">Par animal</h3>
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      {ANIMALS.map((animal) => (
+                        <Link
+                          key={animal.value}
+                          href={getAnimalRoute(animal.value as any)}
+                          className="px-3 py-2 rounded-md text-sm font-medium bg-secondary border border-border hover:bg-secondary/80 text-center"
+                        >
+                          {animal.label}
+                        </Link>
+                      ))}
                     </div>
-                  ))}
+                  </div>
 
                   <hr className="my-2" />
-                  <Link
-                    href="/brands"
-                    className="text-lg font-medium hover:text-primary py-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
+                  <Link href="/brands" className="text-lg font-medium hover:text-primary py-2">
                     Marques
                   </Link>
                   <hr className="my-2" />
-                  <Link
-                    href="/login"
-                    className="text-lg font-medium hover:text-primary py-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
+                  <Link href="/login" className="text-lg font-medium hover:text-primary py-2">
                     Se connecter
                   </Link>
-                  <Link
-                    href="/register"
-                    className="text-muted-foreground hover:text-primary"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
+                  <Link href="/register" className="text-muted-foreground hover:text-primary">
                     Créer un compte
                   </Link>
                 </nav>
@@ -290,90 +295,8 @@ export function Header({ categories: initialCategories }: HeaderProps) {
         <div className="container mx-auto px-4">
           <NavigationMenu className="max-w-none">
             <NavigationMenuList className="gap-1">
-              {/* Categories Dropdown */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="font-medium">Catégories</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="w-[900px] p-6">
-                    {!hasCategories ? (
-                      <div className="flex items-center justify-center h-32">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                      </div>
-                    ) : (
-                      <>
-                      <div className="grid grid-cols-3 gap-4">
-                        {categories.map((category) => {
-                          const Icon = getCategoryIcon(category.slug)
-                          return (
-                            <div 
-                              key={category.id} 
-                              className="group relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-background to-secondary/30 p-5 transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:scale-[1.02]"
-                            >
-                              <Link
-                                href={`/categories/${category.slug}`}
-                                className="flex items-start gap-3 mb-4"
-                              >
-                                <div className="p-2.5 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-                                  <Icon className="h-5 w-5" />
-                                </div>
-                                <div className="flex-1">
-                                  <h3 className="font-bold text-base text-foreground group-hover:text-primary transition-colors duration-200">
-                                    {category.name}
-                                  </h3>
-                                  {category.description && (
-                                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                                      {category.description}
-                                    </p>
-                                  )}
-                                </div>
-                              </Link>
-                              
-                              {category.children && category.children.length > 0 && (
-                                <ul className="space-y-1.5 border-t border-border/50 pt-3">
-                                  {category.children.slice(0, 4).map((sub) => (
-                                    <li key={sub.id}>
-                                      <Link
-                                        href={`/categories/${sub.slug}`}
-                                        className="text-sm block py-1.5 px-2 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all duration-200"
-                                      >
-                                        {sub.name}
-                                      </Link>
-                                    </li>
-                                  ))}
-                                  {category.children.length > 4 && (
-                                    <li>
-                                      <Link
-                                        href={`/categories/${category.slug}`}
-                                        className="text-sm block py-1.5 px-2 rounded-md font-medium text-primary hover:bg-primary/5 transition-all duration-200 flex items-center gap-1"
-                                      >
-                                        <span>+{category.children.length - 4} autres</span>
-                                        <span className="text-xs">→</span>
-                                      </Link>
-                                    </li>
-                                  )}
-                                </ul>
-                              )}
-                              
-                              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                            </div>
-                          )
-                        })}
-                      </div>
-                      
-                      <div className="mt-6 pt-4 border-t border-border">
-                        <Link 
-                          href="/categories" 
-                          className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors duration-200"
-                        >
-                          <span>Voir toutes les catégories</span>
-                          <span className="text-lg">→</span>
-                        </Link>
-                      </div>
-                      </>
-                    )}
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+              {/* Categories Menu - New Modern Mega Menu */}
+              <CategoriesMenu categories={categories} />
 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>

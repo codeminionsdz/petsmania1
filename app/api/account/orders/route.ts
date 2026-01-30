@@ -219,7 +219,7 @@ export async function GET(request: NextRequest) {
 
     let linkedOrders = orders || []
     
-    // Extract phone from email if phone is not set (format: phone-XXXXXXXXXX@parapharmacie.local)
+    // Extract phone from email if phone is not set (format: phone-XXXXXXXXXX@petsmania.local)
     let userPhone = profile?.phone
     if (!userPhone && profile?.email) {
       const phoneMatch = profile.email.match(/phone-([^@]+)@/)

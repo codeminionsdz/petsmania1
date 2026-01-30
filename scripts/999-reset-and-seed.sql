@@ -17,47 +17,73 @@ DELETE FROM promo_codes;
 -- الفئات الرئيسية والفرعية
 -- Main and Sub Categories
 -- ===================================================
-INSERT INTO categories (id, name, slug, description, parent_id) VALUES
-  -- Visage (العناية بالوجه)
-  ('c1000000-0000-0000-0000-000000000001', 'Visage', 'visage', 'Soins du visage pour tous types de peau', NULL),
-  ('c1100000-0000-0000-0000-000000000011', 'Nettoyants', 'nettoyants-visage', 'Nettoyants et démaquillants pour le visage', 'c1000000-0000-0000-0000-000000000001'),
-  ('c1200000-0000-0000-0000-000000000012', 'Hydratants', 'hydratants-visage', 'Crèmes hydratantes et sérums', 'c1000000-0000-0000-0000-000000000001'),
-  ('c1300000-0000-0000-0000-000000000013', 'Anti-âge', 'anti-age', 'Soins anti-rides et raffermissants', 'c1000000-0000-0000-0000-000000000001'),
-  ('c1400000-0000-0000-0000-000000000014', 'Protection solaire', 'protection-solaire-visage', 'Crèmes solaires et après-soleil', 'c1000000-0000-0000-0000-000000000001'),
-  ('c1500000-0000-0000-0000-000000000015', 'Masques', 'masques-visage', 'Masques purifiants et hydratants', 'c1000000-0000-0000-0000-000000000001'),
-
-  -- Cheveux (العناية بالشعر)
-  ('c2000000-0000-0000-0000-000000000002', 'Cheveux', 'cheveux', 'Soins capillaires pour tous types de cheveux', NULL),
-  ('c2100000-0000-0000-0000-000000000021', 'Shampoings', 'shampoings', 'Shampoings pour tous types de cheveux', 'c2000000-0000-0000-0000-000000000002'),
-  ('c2200000-0000-0000-0000-000000000022', 'Après-shampoings', 'apres-shampoings', 'Après-shampoings et masques capillaires', 'c2000000-0000-0000-0000-000000000002'),
-  ('c2300000-0000-0000-0000-000000000023', 'Anti-chute', 'anti-chute-cheveux', 'Traitements anti-chute de cheveux', 'c2000000-0000-0000-0000-000000000002'),
-  ('c2400000-0000-0000-0000-000000000024', 'Colorations', 'colorations', 'Colorations et soins colorés', 'c2000000-0000-0000-0000-000000000002'),
-
-  -- Corps (العناية بالجسم)
-  ('c3000000-0000-0000-0000-000000000003', 'Corps', 'corps', 'Soins corporels et hydratation', NULL),
-  ('c3100000-0000-0000-0000-000000000031', 'Gels douche', 'gels-douche', 'Gels douche et savons', 'c3000000-0000-0000-0000-000000000003'),
-  ('c3200000-0000-0000-0000-000000000032', 'Laits corporels', 'laits-corporels', 'Laits et crèmes hydratantes corps', 'c3000000-0000-0000-0000-000000000003'),
-  ('c3300000-0000-0000-0000-000000000033', 'Déodorants', 'deodorants', 'Déodorants et anti-transpirants', 'c3000000-0000-0000-0000-000000000003'),
-  ('c3400000-0000-0000-0000-000000000034', 'Minceur', 'minceur', 'Soins minceur et anti-cellulite', 'c3000000-0000-0000-0000-000000000003'),
-
-  -- Mains et Pieds (الأيدي والأقدام)
-  ('c4000000-0000-0000-0000-000000000004', 'Mains et Pieds', 'mains-pieds', 'Soins des mains et des pieds', NULL),
-  ('c4100000-0000-0000-0000-000000000041', 'Crèmes mains', 'cremes-mains', 'Crèmes hydratantes pour les mains', 'c4000000-0000-0000-0000-000000000004'),
-  ('c4200000-0000-0000-0000-000000000042', 'Soins pieds', 'soins-pieds', 'Crèmes et traitements pour les pieds', 'c4000000-0000-0000-0000-000000000004'),
-
-  -- Maman et Bébé (الأم والطفل)
-  ('c5000000-0000-0000-0000-000000000005', 'Maman et Bébé', 'maman-bebe', 'Produits pour mamans et bébés', NULL),
-  ('c5100000-0000-0000-0000-000000000051', 'Hygiène bébé', 'hygiene-bebe', 'Produits d''hygiène pour bébé', 'c5000000-0000-0000-0000-000000000005'),
-  ('c5200000-0000-0000-0000-000000000052', 'Soins bébé', 'soins-bebe', 'Crèmes et soins pour bébé', 'c5000000-0000-0000-0000-000000000005'),
-  ('c5300000-0000-0000-0000-000000000053', 'Maternité', 'maternite', 'Soins pour femmes enceintes', 'c5000000-0000-0000-0000-000000000005'),
-  ('c5400000-0000-0000-0000-000000000054', 'Alimentation bébé', 'alimentation-bebe', 'Lait infantile et nutrition bébé', 'c5000000-0000-0000-0000-000000000005'),
-
-  -- Matériel Médical (الأجهزة الطبية)
-  ('c6000000-0000-0000-0000-000000000006', 'Matériel Médical', 'materiel-medical', 'Dispositifs et matériel médical', NULL),
-  ('c6100000-0000-0000-0000-000000000061', 'Thermomètres', 'thermometres', 'Thermomètres médicaux', 'c6000000-0000-0000-0000-000000000006'),
-  ('c6200000-0000-0000-0000-000000000062', 'Tensiomètres', 'tensiometres', 'Appareils de mesure de tension', 'c6000000-0000-0000-0000-000000000006'),
-  ('c6300000-0000-0000-0000-000000000063', 'Pansements', 'pansements', 'Pansements et bandages', 'c6000000-0000-0000-0000-000000000006'),
-  ('c6400000-0000-0000-0000-000000000064', 'Orthopédie', 'orthopedie', 'Matériel orthopédique', 'c6000000-0000-0000-0000-000000000006');
+INSERT INTO categories (id, name, slug, description, animal_type, parent_id) VALUES
+  -- DOG CATEGORIES (الكلاب)
+  ('dcat-001', 'Alimentation Chien', 'alimentation-chien', 'Nourriture et suppléments pour chiens', 'dog', NULL),
+  ('dcat-001-001', 'Croquettes', 'croquettes', 'Croquettes et aliments secs', 'dog', 'dcat-001'),
+  ('dcat-001-002', 'Pâtées', 'patees', 'Pâtées et aliments humides', 'dog', 'dcat-001'),
+  ('dcat-001-003', 'Friandises', 'friandises-chien', 'Friandises et récompenses', 'dog', 'dcat-001'),
+  
+  ('dcat-002', 'Hygiène Chien', 'hygiene-chien', 'Produits de nettoyage et d''hygiène', 'dog', NULL),
+  ('dcat-002-001', 'Shampooings', 'shampooings-chien', 'Shampooings et nettoyants', 'dog', 'dcat-002'),
+  ('dcat-002-002', 'Brosses et Peignes', 'brosses-chien', 'Outils de toilettage', 'dog', 'dcat-002'),
+  ('dcat-002-003', 'Nettoyage Dentaire', 'hygiene-dentaire-chien', 'Produits pour l''hygiène dentaire', 'dog', 'dcat-002'),
+  
+  ('dcat-003', 'Santé Chien', 'sante-chien', 'Soins de santé et compléments', 'dog', NULL),
+  ('dcat-003-001', 'Vitamines et Suppléments', 'vitamines-chien', 'Suppléments nutritionnels', 'dog', 'dcat-003'),
+  ('dcat-003-002', 'Anti-Parasitaires', 'antiparasitaires-chien', 'Traitements antiparasitaires', 'dog', 'dcat-003'),
+  ('dcat-003-003', 'Articulations et Mobilité', 'articulations-chien', 'Produits pour articulations', 'dog', 'dcat-003'),
+  
+  ('dcat-004', 'Accessoires Chien', 'accessoires-chien', 'Colliers, laisses et accessoires', 'dog', NULL),
+  ('dcat-004-001', 'Colliers et Laisses', 'colliers-laisses', 'Colliers, laisses et harnais', 'dog', 'dcat-004'),
+  ('dcat-004-002', 'Jouets', 'jouets-chien', 'Jouets et jeux', 'dog', 'dcat-004'),
+  ('dcat-004-003', 'Literie', 'literie-chien', 'Lits et coussinets', 'dog', 'dcat-004'),
+  
+  -- CAT CATEGORIES (القطط)
+  ('ccat-001', 'Alimentation Chat', 'alimentation-chat', 'Nourriture et suppléments pour chats', 'cat', NULL),
+  ('ccat-001-001', 'Croquettes', 'croquettes-chat', 'Croquettes et aliments secs', 'cat', 'ccat-001'),
+  ('ccat-001-002', 'Pâtées', 'patees-chat', 'Pâtées et aliments humides', 'cat', 'ccat-001'),
+  ('ccat-001-003', 'Friandises', 'friandises-chat', 'Friandises et récompenses', 'cat', 'ccat-001'),
+  
+  ('ccat-002', 'Hygiène Chat', 'hygiene-chat', 'Produits de nettoyage et d''hygiène', 'cat', NULL),
+  ('ccat-002-001', 'Shampooings', 'shampooings-chat', 'Shampooings et nettoyants', 'cat', 'ccat-002'),
+  ('ccat-002-002', 'Brosses et Peignes', 'brosses-chat', 'Outils de toilettage', 'cat', 'ccat-002'),
+  ('ccat-002-003', 'Litière et Nettoyage', 'litiere-chat', 'Litière et produits de nettoyage', 'cat', 'ccat-002'),
+  
+  ('ccat-003', 'Santé Chat', 'sante-chat', 'Soins de santé et compléments', 'cat', NULL),
+  ('ccat-003-001', 'Vitamines et Suppléments', 'vitamines-chat', 'Suppléments nutritionnels', 'cat', 'ccat-003'),
+  ('ccat-003-002', 'Anti-Parasitaires', 'antiparasitaires-chat', 'Traitements antiparasitaires', 'cat', 'ccat-003'),
+  ('ccat-003-003', 'Articulations et Mobilité', 'articulations-chat', 'Produits pour articulations', 'cat', 'ccat-003'),
+  
+  ('ccat-004', 'Accessoires Chat', 'accessoires-chat', 'Jouets, griffoirs et accessoires', 'cat', NULL),
+  ('ccat-004-001', 'Griffoirs', 'griffoirs-chat', 'Griffoirs et griffades', 'cat', 'ccat-004'),
+  ('ccat-004-002', 'Jouets', 'jouets-chat', 'Jouets et jeux interactifs', 'cat', 'ccat-004'),
+  ('ccat-004-003', 'Mobilier', 'mobilier-chat', 'Arbres à chats et mobilier', 'cat', 'ccat-004'),
+  
+  -- BIRD CATEGORIES (الطيور)
+  ('bcat-001', 'Alimentation Oiseau', 'alimentation-oiseau', 'Nourriture et graines pour oiseaux', 'bird', NULL),
+  ('bcat-001-001', 'Graines', 'graines-oiseau', 'Mélanges de graines', 'bird', 'bcat-001'),
+  ('bcat-001-002', 'Fruits et Légumes', 'fruits-legumes-oiseau', 'Fruits et légumes frais', 'bird', 'bcat-001'),
+  ('bcat-001-003', 'Suppléments', 'supplements-oiseau', 'Suppléments nutritionnels', 'bird', 'bcat-001'),
+  
+  ('bcat-002', 'Hygiène Oiseau', 'hygiene-oiseau', 'Produits de nettoyage et d''hygiène', 'bird', NULL),
+  ('bcat-002-001', 'Nettoyage Cage', 'nettoyage-cage', 'Produits de nettoyage', 'bird', 'bcat-002'),
+  ('bcat-002-002', 'Bains', 'bains-oiseau', 'Accessoires de bain', 'bird', 'bcat-002'),
+  
+  ('bcat-003', 'Santé Oiseau', 'sante-oiseau', 'Soins de santé et compléments', 'bird', NULL),
+  ('bcat-003-001', 'Vitamines', 'vitamines-oiseau', 'Suppléments vitaminés', 'bird', 'bcat-003'),
+  ('bcat-003-002', 'Anti-Parasitaires', 'antiparasitaires-oiseau', 'Traitements antiparasitaires', 'bird', 'bcat-003'),
+  
+  ('bcat-004', 'Accessoires Oiseau', 'accessoires-oiseau', 'Cages et accessoires', 'bird', NULL),
+  ('bcat-004-001', 'Cages', 'cages-oiseau', 'Cages et volières', 'bird', 'bcat-004'),
+  ('bcat-004-002', 'Perchoirs et Jouets', 'perchoirs-jouets', 'Perchoirs et jouets', 'bird', 'bcat-004'),
+  
+  -- UNIVERSAL CATEGORIES (متعدد الحيوانات)
+  ('ucat-001', 'Santé Générale', 'sante-generale', 'Produits de santé pour tous', 'universal', NULL),
+  ('ucat-001-001', 'Thermomètres', 'thermometres', 'Thermomètres vétérinaires', 'universal', 'ucat-001'),
+  ('ucat-001-002', 'Pansements', 'pansements', 'Pansements et bandages', 'universal', 'ucat-001'),
+  
+  ('ucat-002', 'Équipement Médical', 'equipement-medical', 'Équipement médical général', 'universal', NULL);
 
 -- ===================================================
 -- العلامات التجارية
@@ -85,27 +111,27 @@ INSERT INTO brands (id, name, slug, description, logo, created_at) VALUES
 -- Products on Promotion
 -- ===================================================
 INSERT INTO products (id, name, slug, description, short_description, price, original_price, discount, on_promotion, category_id, brand_id, stock, sku, featured, created_at) VALUES
-  -- Visage Products
-  ('a1000000-0000-0000-0000-000000000001', 'La Roche-Posay Effaclar Duo+', 'effaclar-duo-plus', 'Soin correcteur anti-imperfections pour peaux à tendance acnéique', 'Anti-imperfections et anti-marques', 3200, 4500, 29, true, 'c1300000-0000-0000-0000-000000000013', 'b1000000-0000-0000-0000-000000000001', 50, 'LRP-EFF-001', true, NOW()),
-  ('a2000000-0000-0000-0000-000000000002', 'Vichy Liftactiv Collagen Specialist', 'vichy-liftactiv-collagen', 'Crème anti-âge au collagène et vitamine C', 'Raffermissant et anti-rides', 4800, 6500, 26, true, 'c1300000-0000-0000-0000-000000000013', 'b2000000-0000-0000-0000-000000000002', 35, 'VCH-LFT-001', true, NOW()),
-  ('a3000000-0000-0000-0000-000000000003', 'Bioderma Sensibio H2O', 'bioderma-sensibio-h2o', 'Solution micellaire nettoyante et démaquillante', 'Nettoie et démaquille en douceur', 1800, 2400, 25, true, 'c1100000-0000-0000-0000-000000000011', 'b4000000-0000-0000-0000-000000000004', 100, 'BIO-SEN-001', false, NOW()),
-  ('a4000000-0000-0000-0000-000000000004', 'Avène Crème Hydratance Optimale', 'avene-creme-hydratance', 'Crème hydratante légère peaux normales à mixtes', 'Hydratation 24h', 2900, 3800, 24, true, 'c1200000-0000-0000-0000-000000000012', 'b3000000-0000-0000-0000-000000000003', 60, 'AVN-HYD-001', false, NOW()),
+  -- Dog Products
+  ('a1000000-0000-0000-0000-000000000001', 'Croquettes Premium Chien', 'croquettes-premium-chien', 'Croquettes haute gamme pour chiens adultes', 'Nutrition complète équilibrée', 4500, 6000, 25, true, 'dcat-001-001', 'b1000000-0000-0000-0000-000000000001', 50, 'DOG-CRQ-001', true, NOW()),
+  ('a2000000-0000-0000-0000-000000000002', 'Shampooing Doux Chien', 'shampooing-doux-chien', 'Shampooing hypoallergénique pour chiens', 'Nettoie en douceur', 2200, 3000, 27, true, 'dcat-002-001', 'b2000000-0000-0000-0000-000000000002', 40, 'DOG-SHP-001', true, NOW()),
+  ('a3000000-0000-0000-0000-000000000003', 'Vitamines Articulations Chien', 'vitamines-articulations-chien', 'Suppléments pour articulations saines', 'Mobilité et flexibilité', 3200, 4500, 29, true, 'dcat-003-003', 'b3000000-0000-0000-0000-000000000003', 35, 'DOG-VIT-001', false, NOW()),
+  ('a4000000-0000-0000-0000-000000000004', 'Collier Ajustable Chien', 'collier-ajustable-chien', 'Collier confortable et durable', 'Ajustable de 30 à 50cm', 1800, 2500, 28, true, 'dcat-004-001', 'b4000000-0000-0000-0000-000000000004', 60, 'DOG-COL-001', false, NOW()),
   
-  -- Cheveux Products
-  ('a5000000-0000-0000-0000-000000000005', 'Ducray Anaphase+ Shampooing', 'ducray-anaphase-shampooing', 'Shampooing complément anti-chute', 'Stimule la croissance', 2200, 3200, 31, true, 'c2300000-0000-0000-0000-000000000023', 'ba000000-0000-0000-0000-00000000000a', 45, 'DCR-ANA-001', true, NOW()),
-  ('a6000000-0000-0000-0000-000000000006', 'Klorane Shampooing à la Camomille', 'klorane-shampooing-camomille', 'Shampooing éclaircissant aux reflets dorés', 'Illumine les cheveux blonds', 1600, 2100, 24, true, 'c2100000-0000-0000-0000-000000000021', 'b9000000-0000-0000-0000-000000000009', 80, 'KLO-CAM-001', false, NOW()),
+  -- Cat Products
+  ('a5000000-0000-0000-0000-000000000005', 'Croquettes Chat Premium', 'croquettes-chat-premium', 'Croquettes spécialement formulées pour chats', 'Saveur poisson et poulet', 3800, 5000, 24, true, 'ccat-001-001', 'b5000000-0000-0000-0000-000000000005', 55, 'CAT-CRQ-001', true, NOW()),
+  ('a6000000-0000-0000-0000-000000000006', 'Shampooing Chat Doux', 'shampooing-chat-doux', 'Shampooing très doux pour pelage chat', 'Sans agressivité', 1900, 2600, 27, true, 'ccat-002-001', 'b6000000-0000-0000-0000-000000000006', 45, 'CAT-SHP-001', false, NOW()),
+  ('a7000000-0000-0000-0000-000000000007', 'Griffoir Chat Sisal', 'griffoir-chat-sisal', 'Griffoir haute qualité en sisal', 'Satisfaction garantie', 2500, 3500, 29, true, 'ccat-004-001', 'b7000000-0000-0000-0000-000000000007', 30, 'CAT-GRF-001', true, NOW()),
+  ('a8000000-0000-0000-0000-000000000008', 'Arbre à Chat Moderne', 'arbre-chat-moderne', 'Arbre à chat avec plateformes multiples', 'Espace de jeu et repos', 5200, 7000, 26, true, 'ccat-004-003', 'b8000000-0000-0000-0000-000000000008', 20, 'CAT-ARB-001', false, NOW()),
   
-  -- Corps Products  
-  ('a7000000-0000-0000-0000-000000000007', 'CeraVe Lait Hydratant', 'cerave-lait-hydratant', 'Lait hydratant pour corps et visage', 'Hydratation longue durée', 2500, 3500, 29, true, 'c3200000-0000-0000-0000-000000000032', 'b6000000-0000-0000-0000-000000000006', 70, 'CRV-LAT-001', true, NOW()),
-  ('a8000000-0000-0000-0000-000000000008', 'Nuxe Huile Prodigieuse', 'nuxe-huile-prodigieuse', 'Huile sèche multi-fonctions visage, corps et cheveux', 'Nourrit, répare et sublime', 3800, 5200, 27, true, 'c3200000-0000-0000-0000-000000000032', 'b7000000-0000-0000-0000-000000000007', 40, 'NXE-HUL-001', true, NOW()),
+  -- Bird Products
+  ('a9000000-0000-0000-0000-000000000009', 'Graines Mélange Oiseau', 'graines-melange-oiseau', 'Mélange complet de graines pour oiseaux', 'Nutrition équilibrée', 1600, 2200, 27, true, 'bcat-001-001', 'b9000000-0000-0000-0000-000000000009', 80, 'BRD-GRN-001', false, NOW()),
+  ('aa000000-0000-0000-0000-00000000000a', 'Fruits Secs Oiseau', 'fruits-secs-oiseau', 'Fruits et légumes séchés pour oiseaux', 'Snack sain naturel', 1400, 1900, 26, true, 'bcat-001-002', 'ba000000-0000-0000-0000-00000000000a', 50, 'BRD-FRT-001', false, NOW()),
+  ('ab000000-0000-0000-0000-00000000000b', 'Cage Volière Spacieuse', 'cage-voliere-spacieuse', 'Grande cage pour oiseaux multiespèces', 'Espace généreux', 8500, 12000, 29, true, 'bcat-004-001', 'bb000000-0000-0000-0000-00000000000b', 15, 'BRD-CAG-001', true, NOW()),
+  ('ac000000-0000-0000-0000-00000000000c', 'Perchoirs Naturels', 'perchoirs-naturels', 'Ensemble de perchoirs naturels variés', 'Confortable et hygiénique', 2100, 2900, 28, true, 'bcat-004-002', 'bc000000-0000-0000-0000-00000000000c', 40, 'BRD-PCH-001', false, NOW()),
   
-  -- Maman et Bébé Products
-  ('a9000000-0000-0000-0000-000000000009', 'Mustela Eau Nettoyante', 'mustela-eau-nettoyante', 'Eau nettoyante sans rinçage pour bébé', 'Nettoie en douceur', 1900, 2600, 27, true, 'c5100000-0000-0000-0000-000000000051', 'b8000000-0000-0000-0000-000000000008', 90, 'MST-EAU-001', false, NOW()),
-  ('aa000000-0000-0000-0000-00000000000a', 'Mustela Hydra Bébé Crème', 'mustela-hydra-bebe', 'Crème hydratante pour le visage de bébé', 'Hydrate et protège', 2100, 2900, 28, true, 'c5200000-0000-0000-0000-000000000052', 'b8000000-0000-0000-0000-000000000008', 65, 'MST-HYD-001', false, NOW()),
-  
-  -- Protection Solaire
-  ('ab000000-0000-0000-0000-00000000000b', 'La Roche-Posay Anthelios SPF50+', 'anthelios-spf50-plus', 'Crème solaire très haute protection', 'Protection optimale UVA/UVB', 3500, 4800, 27, true, 'c1400000-0000-0000-0000-000000000014', 'b1000000-0000-0000-0000-000000000001', 55, 'LRP-ANT-001', true, NOW()),
-  ('ac000000-0000-0000-0000-00000000000c', 'Uriage Bariésun Crème SPF50+', 'uriage-bariesun-spf50', 'Crème solaire haute protection peaux sensibles', 'Texture légère et invisible', 2800, 3900, 28, true, 'c1400000-0000-0000-0000-000000000014', 'be000000-0000-0000-0000-00000000000e', 48, 'URG-BAR-001', false, NOW());
+  -- Universal Products
+  ('ad000000-0000-0000-0000-00000000000d', 'Thermomètre Vétérinaire Digital', 'thermometre-digital-vet', 'Thermomètre vétérinaire précis et rapide', 'Lecture en 10 secondes', 2800, 3900, 28, true, 'ucat-001-001', 'bd000000-0000-0000-0000-00000000000d', 70, 'UNI-THM-001', false, NOW()),
+  ('ae000000-0000-0000-0000-00000000000e', 'Kit Pansements Vétérinaires', 'kit-pansements-vet', 'Kit complet de pansements et bandages', 'Protection et hygiène', 1500, 2000, 25, true, 'ucat-001-002', 'be000000-0000-0000-0000-00000000000e', 100, 'UNI-BND-001', false, NOW());
 
 -- تم! البيانات النظيفة جاهزة
 -- Done! Clean data is ready
